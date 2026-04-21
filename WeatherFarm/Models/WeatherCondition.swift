@@ -10,5 +10,5 @@ enum WeatherCondition {
 }
 
 enum TimeOfDay {
-    case day, afternoon, night
+    case dawn, day, afternoon, night
 }

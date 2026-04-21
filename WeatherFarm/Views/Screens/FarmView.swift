@@ -19,8 +19,9 @@ struct FarmView: View {
     
     var body: some View {
         ZStack {
-            SkyBackgroundView(weather: .sunny, time: .day)
-            SpriteView(scene: scene)
+            // TODO: CHANGE THIS MANUT
+            SkyBackgroundView(weather: .sunny, time: .afternoon)
+            SpriteView(scene: scene, options: .allowsTransparency)
                 .ignoresSafeArea()
                 .onAppear {
                     if let gs = scene as? GameScene {
@@ -128,9 +129,7 @@ struct FarmView: View {
         }
     }
     
-    
-    // MARK: - Supporting Views & Styles
-    
+
     struct GameActionButton: View {
         let systemName: String
         let color: Color
