@@ -4,36 +4,84 @@
 //
 //  Created by Michel Pierce on 21/04/26.
 //
-
 import SwiftUI
-
 
 struct SkyBackgroundView: View {
     var weather: WeatherCondition
     var time: TimeOfDay
     
-    var skyColors: [Color] {
-        switch (weather, time) {
-        case (.sunny, .day):
-            return [Color(red: 0.4, green: 0.7, blue: 1.0), Color(red: 0.2, green: 0.5, blue: 1.0)]
-        case (.sunny, .afternoon):
-            return [Color.orange, Color.pink.opacity(0.8), Color.purple.opacity(0.6)]
-        case (.sunny, .night):
-            return [Color(red: 0.05, green: 0.05, blue: 0.2), Color.black]
-        case (.cloudy, .day):
-            return [Color.gray.opacity(0.6), Color.gray.opacity(0.9)]
-        default:
-            return [Color.blue, Color.black]
-        }
+    var imageSuffix: String {
+        let weatherStr = String(describing: weather) // e.g., "sunny", "stormy"
+        let timeStr = String(describing: time)       // e.g., "day", "afternoon", "night"
+        return "\(timeStr)_\(weatherStr)"
     }
     
     var body: some View {
-        LinearGradient(
-            colors: skyColors,
-            startPoint: .top,
-            endPoint: .bottom
-        )
+        GeometryReader { geo in
+            ZStack {
+                Image("bg_\(imageSuffix)_1").resizable()
+                    .scaledToFill()
+                    .frame(width: geo.size.width, height: geo.size.height)
+                    .clipped()
+                    .opacity(1.0)
+                
+                Image("bg_\(imageSuffix)_2").resizable()
+                    .scaledToFill()
+                    .frame(width: geo.size.width, height: geo.size.height)
+                    .clipped()
+                    .opacity(0.5)
+                
+                Image("bg_\(imageSuffix)_3").resizable()
+                    .scaledToFill()
+                    .frame(width: geo.size.width, height: geo.size.height)
+                    .clipped()
+                    .opacity(0.4)
+                
+                ScrollingCloudLayer(imageName: "bg_\(imageSuffix)_4", speed: 30.0)
+            }
+            .position(x: geo.size.width / 2, y: geo.size.height / 2)
+        }
         .ignoresSafeArea()
-        .animation(.easeInOut(duration: 2.0), value: skyColors)
+        .animation(.easeInOut(duration: 2.0), value: imageSuffix)
+    }
+}
+
+
+struct ScrollingCloudLayer: View {
+    let imageName: String
+    let speed: Double
+    
+    @State private var isAnimating = false
+    
+    var body: some View {
+        GeometryReader { geo in
+            HStack(spacing: 0) {
+                Image(imageName)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: geo.size.width, height: geo.size.height)
+                
+                Image(imageName)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: geo.size.width, height: geo.size.height)
+            }
+            .offset(x: isAnimating ? -geo.size.width : 0)
+            .animation(
+                .linear(duration: speed).repeatForever(autoreverses: false),
+                value: isAnimating
+            )
+            .onAppear {
+                isAnimating = true
+            }
+            .onChange(of: imageName) { _, _ in
+                isAnimating = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    isAnimating = true
+                }
+            }
+        }
+        .clipped()
+        .opacity(0.3)
     }
 }

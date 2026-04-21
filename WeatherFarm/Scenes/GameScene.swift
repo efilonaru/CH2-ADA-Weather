@@ -164,7 +164,7 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
     private let autoReplant: Bool = true
 
     override func didMove(to view: SKView) {
-        backgroundColor = .clear
+        self.backgroundColor = .clear
 
         // Setup camera
         let cam = SKCameraNode()
