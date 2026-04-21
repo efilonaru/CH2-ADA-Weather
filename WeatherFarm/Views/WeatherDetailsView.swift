@@ -12,7 +12,7 @@ struct WeatherDetailsView: View {
     
     var body: some View {
         ZStack {
-            Color.blue.opacity(0.1).ignoresSafeArea()
+            Color.black.opacity(0.3).ignoresSafeArea()
             
             VStack(spacing: 20) {
                 CurrentWeatherView(day: selectedDay)

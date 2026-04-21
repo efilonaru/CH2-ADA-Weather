@@ -56,7 +56,6 @@ struct DailySelectorView: View {
                 .padding(.vertical, 10)
             }
         }
-        .background(Color(.secondarySystemBackground).ignoresSafeArea(edges: .bottom))
     }
 }
 
