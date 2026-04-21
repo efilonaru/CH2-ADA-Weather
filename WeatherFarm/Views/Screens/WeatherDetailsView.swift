@@ -26,7 +26,7 @@ struct WeatherDetailsView: View {
                 
                 DailySelectorView(
                     forecast: MockData.weekForecast,
-                    selectedDay: $selectedDay 
+                    selectedDay: $selectedDay
                 )
             }
             .padding(.top)
