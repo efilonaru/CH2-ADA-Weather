@@ -1,0 +1,73 @@
+import SwiftUI
+
+struct SettingsView: View {
+    @EnvironmentObject var viewModel: GameViewModel
+    
+    var body: some View {
+        List {
+            Section(header: Text("Weather Control").font(.headline)) {
+                Picker("Current Climate", selection: $viewModel.currentWeather) {
+                    ForEach(WeatherCondition.allCases, id: \.self) { weather in
+                        HStack {
+                            Image(systemName: weather.icon)
+                            Text(weather.rawValue)
+                        }
+                        .tag(weather)
+                    }
+                }
+                .pickerStyle(.inline)
+            }
+            
+            Section(header: Text("Farm Summary").font(.headline)) {
+                HStack {
+                    Text("Planted Crops")
+                    Spacer()
+                    Text("\(viewModel.plantedCrops.count)")
+                        .foregroundColor(.secondary)
+                }
+                
+                HStack {
+                    Text("Total Base Value")
+                    Spacer()
+                    Text("💰 \(viewModel.potentialGoldSummary)")
+                        .foregroundColor(.secondary)
+                }
+                
+                HStack {
+                    Text("Weather Bonus (20%)")
+                    Spacer()
+                    Text("+ 💰 \(viewModel.currentWeatherBonus)")
+                        .fontWeight(.bold)
+                        .foregroundColor(.green)
+                }
+                
+                Divider()
+                
+                HStack {
+                    Text("Potential Total Gold")
+                    Spacer()
+                    Text("💰 \(viewModel.potentialGoldSummary + viewModel.currentWeatherBonus)")
+                        .font(.headline)
+                        .foregroundColor(.yellow)
+                }
+                
+                if !viewModel.plantedCrops.isEmpty {
+                    let totalPotential = Double(viewModel.potentialGoldSummary + viewModel.currentWeatherBonus)
+                    let avg = totalPotential / Double(viewModel.plantedCrops.count)
+                    HStack {
+                        Text("Average Gold / Crop")
+                        Spacer()
+                        Text(String(format: "%.1f", avg))
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+        }
+        .navigationTitle("Settings")
+        .background(Color(UIColor.systemGroupedBackground))
+    }
+}
+
+#Preview {
+    SettingsView().environmentObject(GameViewModel())
+}
