@@ -17,9 +17,24 @@ struct FarmView: View {
         return s
     }()
     
+    var todayHourly: [HourlyWeather] {
+        guard let base = MockData.weekForecast.first(where: { $0.isToday })?.hourlyData else {
+            return []
+        }
+
+        // Use viewModel.currentWeather.icon for the "Now" slot
+        let now = HourlyWeather(
+            time: "Now",
+            iconName: viewModel.currentWeather.icon,
+            temp: base.first?.temp ?? 30
+        )
+
+        return [now] + base.dropFirst()
+    }
+    
     var body: some View {
         ZStack {
-            SkyBackgroundView(weather: .sunny, time: .day)
+            SkyBackgroundView(weather: viewModel.currentWeather, time: .day)
             SpriteView(scene: scene)
                 .ignoresSafeArea()
                 .onAppear {
@@ -30,16 +45,39 @@ struct FarmView: View {
             
             VStack {
                 topBar
+                goldView
                 Spacer()
                 bottomBar
             }
             .padding()
         }
         .environmentObject(viewModel)
+        .alert(viewModel.confirmationMessage, isPresented: $viewModel.showConfirmation) {
+            Button("Cancel", role: .cancel) { }
+            Button("Buy") {
+                viewModel.onConfirm?()
+            }
+        }
         .sheet(isPresented: $showingWeatherCalendar) {
                     WeatherDetailsView()
                 .presentationDetents([.large])
                 }
+        .sheet(isPresented: $viewModel.showShop) {
+            ShopView()
+                .environmentObject(viewModel)
+                .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $viewModel.showInventory) {
+            InventoryView()
+                .environmentObject(viewModel)
+                .presentationDetents([.medium])
+        }
+        .sheet(isPresented: $viewModel.showSettings) {
+            NavigationView {
+                SettingsView()
+                    .environmentObject(viewModel)
+            }
+        }
         .sheet(item: $viewModel.selectedTile, onDismiss: {
             viewModel.deselectTile()
         }) { selection in
@@ -50,69 +88,81 @@ struct FarmView: View {
     }
     
     var topBar: some View {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    
-                    Button(action: {
-                        showingWeatherCalendar = true
-                    }) {
-                        HStack(spacing: 6) {
-                            Image(systemName: "sun.max.fill")
-                                .foregroundColor(.orange)
-                            Text("Sunny")
-                                .fontWeight(.bold)
-                                .foregroundColor(.primary)
-                        }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(.ultraThinMaterial)
-                        .clipShape(Capsule())
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
-
-                    HStack(spacing: 6) {
-                        Image(systemName: "bitcoinsign.circle.fill")
-                            .foregroundColor(.yellow)
-                        Text("\(viewModel.gold)")
-                            .font(.system(.headline, design: .rounded))
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(.ultraThinMaterial)
-                    .clipShape(Capsule())
-                    .shadow(color: .black.opacity(0.1), radius: 4)
-                }
-                
-                Spacer()
-
-                Button(action: {}) {
-                    Image(systemName: "gearshape.fill")
-                    .font(.title3)
-                    .padding(12)
-                    .background(.ultraThinMaterial)
-                    .clipShape(Circle())
-                    .overlay(Circle().stroke(.white.opacity(0.2), lineWidth: 1))
+        WeatherForecast(data: todayHourly)
+            .onTapGesture {
+                showingWeatherCalendar = true
             }
-            .buttonStyle(SecondaryButtonStyle())
+    }
+    
+    var goldView: some View {
+        HStack {
+            Spacer()
+            
+            HStack(spacing: 6) {
+                Image(systemName: "bitcoinsign.circle.fill")
+                    .foregroundColor(.yellow)
+                
+                Text("\(viewModel.gold)")
+                    .font(.system(.headline, design: .rounded))
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(.ultraThinMaterial)
+            .clipShape(Capsule())
+            .shadow(color: .black.opacity(0.1), radius: 4)
         }
     }
+    
+    @State private var isMenuExpanded = false
     
     var bottomBar: some View {
         HStack {
             Spacer()
             
             VStack(spacing: 16) {
-                // Edit Mode Button
-                GameActionButton(systemName: "pencil", color: .blue)
+                if isMenuExpanded {
+                    // Settings Button
+                    GameActionButton(systemName: "gearshape.fill", color: .gray) {
+                        viewModel.showSettings = true
+                        isMenuExpanded = false
+                    }
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    
+                    // Edit Mode Button
+                    GameActionButton(
+                        systemName: "pencil",
+                        color: viewModel.isEditMode ? .purple : .blue
+                    ) {
+                        viewModel.toggleEditMode()
+                        withAnimation { isMenuExpanded = false }
+                    }
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    
+                    // Inventory Button
+                    GameActionButton(systemName: "bag.fill", color: .green) {
+                        viewModel.showInventory = true
+                        isMenuExpanded = false
+                    }
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    
+                    // Shop Button
+                    GameActionButton(systemName: "cart.fill", color: .orange) {
+                        viewModel.showShop = true
+                        isMenuExpanded = false
+                    }
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
                 
-                // Shop Button
-                GameActionButton(systemName: "cart.fill", color: .orange)
-                
-                // Expand/Inventory Button
-                Button(action: {}) {
+                // Toggle Button (Chevron)
+                Button(action: {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                        isMenuExpanded.toggle()
+                    }
+                }) {
                     Image(systemName: "chevron.up")
                         .font(.system(size: 18, weight: .bold))
                         .foregroundColor(.primary)
+                        .rotationEffect(.degrees(isMenuExpanded ? 180 : 0))
                         .frame(width: 44, height: 44)
                         .background(.ultraThinMaterial)
                         .clipShape(Circle())
@@ -134,9 +184,10 @@ struct FarmView: View {
     struct GameActionButton: View {
         let systemName: String
         let color: Color
+        let action: () -> Void
         
         var body: some View {
-            Button(action: {}) {
+            Button(action: action) {
                 Image(systemName: systemName)
                     .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.white)

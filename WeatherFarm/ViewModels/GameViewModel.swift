@@ -8,14 +8,12 @@ struct TileSelection: Identifiable, Equatable {
     let gridY: Int
 }
 
-// PlantRequest used to communicate from SwiftUI down to the Scene
 struct PlantRequest {
     let gridX: Int
     let gridY: Int
     let crop: CropModel
 }
 
-// HarvestRequest used to communicate harvest intent from UI down to the Scene (or vice-versa)
 struct HarvestRequest {
     let gridX: Int
     let gridY: Int
@@ -23,19 +21,43 @@ struct HarvestRequest {
 
 final class GameViewModel: ObservableObject {
     @Published var selectedTile: TileSelection? = nil
+    @Published var gold: Int = 100
+    
+    // Inventory: Mapping of Crop name to quantity owned
+    @Published var inventory: [String: Int] = [
+        "Wheat": 5 // Starting seeds
+    ]
+    
+    // Navigation and Mode flags
+    @Published var showShop = false
+    @Published var showInventory = false
+    @Published var showSettings = false
+    @Published var isEditMode = false
+    
+    // Game State
+    @Published var currentWeather: WeatherCondition = .sunny
+    @Published var plantedCrops: [String: CropModel] = [:] // Key: "x:y"
+    
+    // Confirmation Dialog State
+    @Published var showConfirmation = false
+    @Published var confirmationMessage = ""
+    var onConfirm: (() -> Void)? = nil
 
-    // Catalog of available crops
+    // Available crops and communication channels
     let crops: [CropModel] = CropModel.sampleCrops
-
-    // A simple passthrough subject for plant requests. Scene listens to this.
     let plantRequest = PassthroughSubject<PlantRequest, Never>()
-
-    // Harvest requests (from UI) — scene listens and performs harvest
     let harvestRequest = PassthroughSubject<HarvestRequest, Never>()
 
-    // Gold balance
-    // Starting gold (tweak this for testing / game tuning)
-    @Published var gold: Int = 100
+    var potentialGoldSummary: Int {
+        plantedCrops.values.reduce(0) { $0 + $1.value }
+    }
+
+    var currentWeatherBonus: Int {
+        plantedCrops.values.reduce(0) { sum, crop in
+            let bonus = (crop.preferredWeather == currentWeather) ? Int(Double(crop.value) * 0.2) : 0
+            return sum + bonus
+        }
+    }
 
     func selectTile(x: Int, y: Int) {
         DispatchQueue.main.async {
@@ -49,54 +71,70 @@ final class GameViewModel: ObservableObject {
         }
     }
 
+    func toggleEditMode() {
+        isEditMode.toggle()
+        deselectTile()
+    }
+
+    func requestConfirmation(message: String, action: @escaping () -> Void) {
+        self.confirmationMessage = message
+        self.onConfirm = action
+        self.showConfirmation = true
+    }
+
+    // Planting logic: consume from inventory and track state
     func requestPlant(crop: CropModel) {
         guard let s = selectedTile else { return }
-        let req = PlantRequest(gridX: s.gridX, gridY: s.gridY, crop: crop)
-        plantRequest.send(req)
-        // Close modal on request
-        deselectTile()
+        
+        // Verify inventory
+        let count = inventory[crop.name] ?? 0
+        if count > 0 {
+            inventory[crop.name] = count - 1
+            plantedCrops["\(s.gridX):\(s.gridY)"] = crop
+            let req = PlantRequest(gridX: s.gridX, gridY: s.gridY, crop: crop)
+            plantRequest.send(req)
+            deselectTile()
+        }
+    }
+
+    func buyCrop(_ crop: CropModel) {
+        requestConfirmation(message: "Buy \(crop.name) for $\(crop.buyPrice)?") {
+            if self.spendGold(crop.buyPrice) {
+                self.inventory[crop.name, default: 0] += 1
+            }
+        }
     }
 
     func requestHarvest(x: Int, y: Int) {
+        plantedCrops.removeValue(forKey: "\(x):\(y)")
         harvestRequest.send(HarvestRequest(gridX: x, gridY: y))
-        // Close modal after harvest
         deselectTile()
     }
 
-    // Called by scene when a harvest succeeds to award gold
     func awardGold(_ amount: Int) {
         DispatchQueue.main.async {
             self.gold += amount
         }
     }
 
-    // Check if the player has at least amount gold
-    func canAfford(_ amount: Int) -> Bool {
-        return gold >= amount
+    // Called by scene during auto-harvest to keep summary in sync
+    func notifyAutoHarvest(x: Int, y: Int, goldAwarded: Int) {
+        self.awardGold(goldAwarded)
+        // If autoReplant is true in scene, the crop stays the same, 
+        // but if it were false, we would remove it here.
     }
 
-    // Attempt to spend gold; returns true if successful
-    @discardableResult
     func spendGold(_ amount: Int) -> Bool {
-        guard amount > 0 else { return true }
-        if Thread.isMainThread {
-            if self.gold >= amount {
-                self.gold -= amount
-                return true
-            } else {
-                return false
-            }
-        } else {
-            var success = false
-            DispatchQueue.main.sync {
-                if self.gold >= amount {
-                    self.gold -= amount
-                    success = true
-                } else {
-                    success = false
-                }
-            }
-            return success
+        guard amount >= 0 else { return true }
+        if self.gold >= amount {
+            self.gold -= amount
+            return true
         }
+        return false
+    }
+    
+    // Helper to get owned crops for the planting modal
+    func getOwnedCrops() -> [CropModel] {
+        return crops.filter { (inventory[$0.name] ?? 0) > 0 }
     }
 }

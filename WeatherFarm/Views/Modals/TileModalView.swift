@@ -16,32 +16,80 @@ struct TileModalView: View {
             Text("Tile (\(gridX), \(gridY))")
                 .font(.headline)
 
-            Text("Plant a crop")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-
-            // Crop catalog
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
-                    ForEach(viewModel.crops) { crop in
-                        Button(action: {
-                            viewModel.requestPlant(crop: crop)
-                        }) {
-                            VStack {
-                                // Placeholder crop image
-                                RoundedRectangle(cornerRadius: 6)
-                                    .fill(Color.green.opacity(0.7))
-                                    .frame(width: 64, height: 64)
-                                    .overlay(Text(crop.name.prefix(1)).font(.title).foregroundColor(.white))
-
-                                Text(crop.name)
-                                    .font(.caption)
-                            }
-                        }
-                        .buttonStyle(.plain)
+            if viewModel.isEditMode {
+                Button(action: {
+                    viewModel.requestHarvest(x: gridX, y: gridY)
+                }) {
+                    HStack {
+                        Image(systemName: "trash.fill")
+                        Text("Remove Crop")
                     }
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.red)
+                    .cornerRadius(12)
                 }
                 .padding(.horizontal)
+            }
+
+            let ownedCrops = viewModel.getOwnedCrops()
+            
+            if ownedCrops.isEmpty {
+                VStack(spacing: 20) {
+                    Image(systemName: "tray.and.arrow.down.fill")
+                        .font(.largeTitle)
+                        .foregroundColor(.gray)
+                    Text("No seeds in inventory")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    
+                    Button("Go to Shop") {
+                        viewModel.deselectTile()
+                        viewModel.showShop = true
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+                .padding()
+            } else {
+                Text("Select a seed to plant")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 16) {
+                        ForEach(ownedCrops) { crop in
+                            Button(action: {
+                                viewModel.requestPlant(crop: crop)
+                            }) {
+                                VStack {
+                                    ZStack(alignment: .bottomTrailing) {
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color.green.opacity(0.1))
+                                            .frame(width: 70, height: 70)
+                                            .overlay(
+                                                Text(crop.name.prefix(1))
+                                                    .font(.title)
+                                            )
+                                        
+                                        Text("\(viewModel.inventory[crop.name] ?? 0)")
+                                            .font(.caption2)
+                                            .fontWeight(.bold)
+                                            .padding(4)
+                                            .background(Color.blue)
+                                            .foregroundColor(.white)
+                                            .clipShape(Circle())
+                                    }
+
+                                    Text(crop.name)
+                                        .font(.caption)
+                                }
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
             }
 
             Spacer()
@@ -49,13 +97,5 @@ struct TileModalView: View {
         .frame(maxWidth: .infinity)
         .background(Color(UIColor.systemBackground))
         .cornerRadius(16)
-        .shadow(radius: 10)
-        .onAppear {
-            // ensure the view model has focus on this tile (optional)
-        }
     }
-}
-
-#Preview {
-    TileModalView(gridX: 0, gridY: 0).environmentObject(GameViewModel())
 }
