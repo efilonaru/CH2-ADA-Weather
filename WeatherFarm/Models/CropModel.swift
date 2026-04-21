@@ -3,10 +3,8 @@ import Foundation
 struct CropModel: Identifiable, Codable, Equatable {
     let id = UUID()
     let name: String
-    let baseGrowthDuration: TimeInterval // seconds to fully grow
-    // optional placeholder for texture name (base name, stage assets will be base_seed, base_early, base_ripe)
+    let baseGrowthDuration: TimeInterval
     let textureName: String?
-    // gold awarded on harvest
     let value: Int
     // gold cost in shop
     let buyPrice: Int

@@ -25,6 +25,6 @@ enum WeatherCondition: String, Codable, CaseIterable {
     }
 }
 
-enum TimeOfDay: String, Codable {
-    case day, afternoon, night
+enum TimeOfDay {
+    case dawn, day, afternoon, night
 }
