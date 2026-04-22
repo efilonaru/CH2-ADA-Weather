@@ -18,6 +18,19 @@ struct SettingsView: View {
                 .pickerStyle(.inline)
             }
             
+//            Section(header: Text("Time Control").font(.headline)) {
+//                Picker("Current Time", selection: $worldManager.currentTime) {
+//                    ForEach(TimeOfDay.allCases, id: \.self) { weather in
+//                        HStack {
+//                            Image(systemName: weather.icon)
+//                            Text(weather.rawValue)
+//                        }
+//                        .tag(weather)
+//                    }
+//                }
+//                .pickerStyle(.inline)
+//            }
+            
             Section(header: Text("Farm Summary").font(.headline)) {
                 HStack {
                     Text("Planted Crops")

@@ -37,7 +37,7 @@ struct SkyBackgroundView: View {
                     .clipped()
                     .opacity(0.4)
                 
-                ScrollingCloudLayer(imageName: "bg_\(imageSuffix)_4", speed: 30.0)
+                ScrollingCloudLayer(imageName: "bg_\(imageSuffix)_4", speed: 50.0)
             }
             .position(x: geo.size.width / 2, y: geo.size.height / 2)
         }

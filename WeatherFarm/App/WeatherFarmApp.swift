@@ -13,8 +13,8 @@ struct WeatherFarmApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .font(.custom("Minecraft", size: 16))
                 .environmentObject(worldManager)
+                .font(.minecraft())
         }
     }
 }

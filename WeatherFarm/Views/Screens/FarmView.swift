@@ -23,7 +23,6 @@ struct FarmView: View {
             return []
         }
 
-        // Use viewModel.currentWeather.icon for the "Now" slot
         let now = HourlyWeather(
             time: "Now",
             iconName: worldManager.currentWeather.icon,
@@ -35,11 +34,12 @@ struct FarmView: View {
     
     var body: some View {
         ZStack {
-            // TODO: CHANGE THIS MANUT
-            SkyBackgroundView(weather: .sunny, time: .afternoon)
+            // TODO: CHANGE THIS MANUT MO APA TAPI WORLDMANAGER FOR NOW
+            SkyBackgroundView(weather: .sunny, time: .night)
             SpriteView(scene: scene, options: .allowsTransparency)
                 .ignoresSafeArea()
                 .onAppear {
+                    viewModel.worldManager = worldManager
                     if let gs = scene as? GameScene {
                         gs.gameViewModel = viewModel
                         gs.worldManager = worldManager
@@ -106,7 +106,8 @@ struct FarmView: View {
                     .foregroundColor(.yellow)
                 
                 Text("\(viewModel.gold)")
-                    .font(.system(.headline, design: .rounded))
+                    .font(.minecraft())
+//                    .font(.system(.headline, design: .rounded))
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
@@ -230,4 +231,5 @@ struct FarmView: View {
 
 #Preview {
     FarmView()
+        .environmentObject(WorldEnvironmentManager())
 }

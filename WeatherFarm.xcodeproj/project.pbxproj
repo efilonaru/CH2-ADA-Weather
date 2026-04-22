@@ -10,9 +10,22 @@
 		C90B49EB2F94F963005B5684 /* WeatherFarm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherFarm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		7F5862002F989D9A00EBEDA7 /* Exceptions for "WeatherFarm" folder in "WeatherFarm" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C90B49EA2F94F963005B5684 /* WeatherFarm */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C90B49ED2F94F963005B5684 /* WeatherFarm */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				7F5862002F989D9A00EBEDA7 /* Exceptions for "WeatherFarm" folder in "WeatherFarm" target */,
+			);
 			path = WeatherFarm;
 			sourceTree = "<group>";
 		};
@@ -255,6 +268,7 @@
 				DEVELOPMENT_TEAM = H9J3TN99GS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WeatherFarm/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -289,6 +303,7 @@
 				DEVELOPMENT_TEAM = H9J3TN99GS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WeatherFarm/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
