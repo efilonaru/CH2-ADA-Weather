@@ -16,11 +16,11 @@ struct CurrentWeatherView: View {
             
             VStack(alignment: .center, spacing: 4) {
                 Text(locationName)
-                    .font(.title2)
+                    .font(.minecraft(size: 20))
                     .fontWeight(.semibold)
                 
                 Text("\(day.dayString), \(day.dateString)")
-                    .font(.subheadline)
+                    .font(.minecraft(size: 16))
                     .foregroundColor(.secondary)
             }
             
@@ -31,7 +31,7 @@ struct CurrentWeatherView: View {
                 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Mostly Cloudy")
-                        .font(.title3)
+                        .font(.minecraft(size: 20))
                         .fontWeight(.medium)
                         .foregroundColor(.primary)
                     
@@ -55,6 +55,7 @@ struct CurrentWeatherView: View {
     
 #Preview {
     CurrentWeatherView(day: DailyWeather(dayString: "Mon", dateString: "Apr 20", isToday: true, iconName: "cloud.sun.fill", highTemp: 31, lowTemp: 25, hourlyData: MockData.generateHourly(baseTemp: 30, icon: "cloud.sun.fill")))
+        .font(.minecraft(size: 16))
 }
 
 

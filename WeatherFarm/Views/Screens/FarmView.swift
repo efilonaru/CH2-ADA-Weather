@@ -35,7 +35,7 @@ struct FarmView: View {
     var body: some View {
         ZStack {
             // TODO: CHANGE THIS MANUT MO APA TAPI WORLDMANAGER FOR NOW
-            SkyBackgroundView(weather: .sunny, time: .night)
+            SkyBackgroundView(weather: worldManager.currentWeather, time: worldManager.currentTime)
             SpriteView(scene: scene, options: .allowsTransparency)
                 .ignoresSafeArea()
                 .onAppear {

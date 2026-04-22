@@ -16,7 +16,8 @@ struct HourlyWeatherListView: View {
                 ForEach(hourlyData) { hour in
                     HStack {
                         Text(hour.time)
-                            .font(.callout)
+                            .font(.minecraft(size: 20))
+//                            .font(.callout)
                             .frame(width: 60, alignment: .leading)
                         
                         Image(systemName: hour.iconName)
@@ -32,7 +33,7 @@ struct HourlyWeatherListView: View {
                         Spacer()
                         
                         Text("\(hour.temp)°")
-                            .font(.title3)
+                            .font(.minecraft(size: 24))
                             .fontWeight(.medium)
                     }
                     .padding(.horizontal, 24)
@@ -48,4 +49,5 @@ struct HourlyWeatherListView: View {
 
 #Preview {
     HourlyWeatherListView(hourlyData: MockData.generateHourly(baseTemp: 30, icon: "cloud.sun.fill"))
+        .font(Font.minecraft(size: 16))
 }

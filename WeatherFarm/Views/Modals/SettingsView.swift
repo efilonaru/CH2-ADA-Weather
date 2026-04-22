@@ -5,7 +5,7 @@ struct SettingsView: View {
     @EnvironmentObject var worldManager: WorldEnvironmentManager
     var body: some View {
         List {
-            Section(header: Text("Weather Control").font(.headline)) {
+            Section(header: Text("Weather Control").font(.minecraft(size: 16))) {
                 Picker("Current Climate", selection: $worldManager.currentWeather) {
                     ForEach(WeatherCondition.allCases, id: \.self) { weather in
                         HStack {
@@ -18,20 +18,20 @@ struct SettingsView: View {
                 .pickerStyle(.inline)
             }
             
-//            Section(header: Text("Time Control").font(.headline)) {
-//                Picker("Current Time", selection: $worldManager.currentTime) {
-//                    ForEach(TimeOfDay.allCases, id: \.self) { weather in
-//                        HStack {
-//                            Image(systemName: weather.icon)
-//                            Text(weather.rawValue)
-//                        }
-//                        .tag(weather)
-//                    }
-//                }
-//                .pickerStyle(.inline)
-//            }
+            Section(header: Text("Time Control").font(.headline)) {
+                Picker("Current Time", selection: $worldManager.currentTime) {
+                    ForEach(TimeOfDay.allCases, id: \.self) { time in
+                        HStack {
+//                            Image(systemName: time.icon)
+                            Text(time.rawValue)
+                        }
+                        .tag(time)
+                    }
+                }
+                .pickerStyle(.inline)
+            }
             
-            Section(header: Text("Farm Summary").font(.headline)) {
+            Section(header: Text("Farm Summary").font(.minecraft(size: 16))) {
                 HStack {
                     Text("Planted Crops")
                     Spacer()
@@ -76,11 +76,14 @@ struct SettingsView: View {
                 }
             }
         }
-        .navigationTitle("Settings")
+//        .navigationTitle("Settings")
         .background(Color(UIColor.systemGroupedBackground))
     }
 }
 
 #Preview {
-    SettingsView().environmentObject(GameViewModel())
+    SettingsView()
+        .environmentObject(GameViewModel())
+        .environmentObject(WorldEnvironmentManager())
+        .font(.minecraft(size: 18))
 }

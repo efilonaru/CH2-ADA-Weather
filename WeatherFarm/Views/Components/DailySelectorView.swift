@@ -23,12 +23,12 @@ struct DailySelectorView: View {
                         }) {
                             VStack(spacing: 8) {
                                 Text(day.isToday ? "Today" : day.dayString)
-                                    .font(.caption)
+                                    .font(.minecraft(size: 20))
                                     .fontWeight(day.isToday ? .bold : .regular)
                                     .foregroundColor(day.isToday ? .blue : .primary)
                                 
                                 Text(day.dateString)
-                                    .font(.caption2)
+                                    .font(.minecraft(size: 16))
                                     .foregroundColor(.secondary)
                                 
                                 Image(systemName: day.iconName)
@@ -37,7 +37,7 @@ struct DailySelectorView: View {
                                     .frame(height: 30)
                                 
                                 Text("\(day.highTemp)° / \(day.lowTemp)°")
-                                    .font(.caption)
+                                    .font(.minecraft(size: 16))
                                     .foregroundColor(.primary)
                             }
                             .padding(.vertical, 12)
