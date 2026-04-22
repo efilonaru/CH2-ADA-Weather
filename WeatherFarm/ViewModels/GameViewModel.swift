@@ -20,6 +20,7 @@ struct HarvestRequest {
 }
 
 final class GameViewModel: ObservableObject {
+    var worldManager: WorldEnvironmentManager?
     @Published var selectedTile: TileSelection? = nil
     @Published var gold: Int = 100
     
@@ -34,8 +35,8 @@ final class GameViewModel: ObservableObject {
     @Published var showSettings = false
     @Published var isEditMode = false
     
-    // Game State
-    @Published var currentWeather: WeatherCondition = .sunny
+    // Game State untuk weather kita ga pake dulu, make universal sek
+//    @Published var currentWeather: WeatherCondition = .sunny
     @Published var plantedCrops: [String: CropModel] = [:] // Key: "x:y"
     
     // Confirmation Dialog State
@@ -53,10 +54,14 @@ final class GameViewModel: ObservableObject {
     }
 
     var currentWeatherBonus: Int {
-        plantedCrops.values.reduce(0) { sum, crop in
-            let bonus = (crop.preferredWeather == currentWeather) ? Int(Double(crop.value) * 0.2) : 0
-            return sum + bonus
-        }
+        guard let currentTargetWeather = worldManager?.currentWeather else {
+                    return 0
+                }
+                
+                return plantedCrops.values.reduce(0) { sum, crop in
+                    let bonus = (crop.preferredWeather == currentTargetWeather) ? Int(Double(crop.value) * 0.2) : 0
+                    return sum + bonus
+                }
     }
 
     func selectTile(x: Int, y: Int) {

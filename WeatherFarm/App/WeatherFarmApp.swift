@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct WeatherFarmApp: App {
+    @StateObject private var worldManager = WorldEnvironmentManager()
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .font(.custom("Minecraft", size: 16))
+                .environmentObject(worldManager)
         }
     }
 }

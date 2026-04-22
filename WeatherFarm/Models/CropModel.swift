@@ -1,7 +1,7 @@
 import Foundation
 
 struct CropModel: Identifiable, Codable, Equatable {
-    let id = UUID()
+    var id = UUID()
     let name: String
     let baseGrowthDuration: TimeInterval
     let textureName: String?

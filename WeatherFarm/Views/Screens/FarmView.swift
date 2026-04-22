@@ -8,6 +8,7 @@ import SwiftUI
 import SpriteKit
 
 struct FarmView: View {
+    @EnvironmentObject var worldManager : WorldEnvironmentManager
     @State private var showingWeatherCalendar = false
     @StateObject private var viewModel = GameViewModel()
     @State private var scene: SKScene = {
@@ -25,7 +26,7 @@ struct FarmView: View {
         // Use viewModel.currentWeather.icon for the "Now" slot
         let now = HourlyWeather(
             time: "Now",
-            iconName: viewModel.currentWeather.icon,
+            iconName: worldManager.currentWeather.icon,
             temp: base.first?.temp ?? 30
         )
 
@@ -41,6 +42,7 @@ struct FarmView: View {
                 .onAppear {
                     if let gs = scene as? GameScene {
                         gs.gameViewModel = viewModel
+                        gs.worldManager = worldManager
                     }
                 }
             

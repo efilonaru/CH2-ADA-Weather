@@ -113,13 +113,25 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
             gameViewModel?.plantRequest.receive(on: DispatchQueue.main).sink { [weak self] req in self?.plantCrop(req) }.store(in: &cancellables)
             gameViewModel?.harvestRequest.receive(on: DispatchQueue.main).sink { [weak self] req in self?.performHarvestAt(x: req.gridX, y: req.gridY) }.store(in: &cancellables)
             gameViewModel?.$isEditMode.receive(on: DispatchQueue.main).sink { [weak self] _ in self?.updateAddButtons() }.store(in: &cancellables)
-            gameViewModel?.$currentWeather.receive(on: DispatchQueue.main).sink { [weak self] weather in self?.currentWeather = weather }.store(in: &cancellables)
+//            gameViewModel?.$currentWeather.receive(on: DispatchQueue.main).sink { [weak self] weather in self?.currentWeather = weather }.store(in: &cancellables)
             gameViewModel?.$selectedTile.receive(on: DispatchQueue.main).sink { [weak self] sel in
                 guard let self = self else { return }
                 for t in self.tiles { t.setSelected(t.gridX == sel?.gridX && t.gridY == sel?.gridY) }
             }.store(in: &cancellables)
         }
     }
+    
+    weak var worldManager: WorldEnvironmentManager? = nil {
+            didSet {
+                // Listen to the global weather state
+                worldManager?.$currentWeather
+                    .receive(on: DispatchQueue.main)
+                    .sink { [weak self] newWeather in
+                        self?.currentWeather = newWeather
+                    }
+                    .store(in: &cancellables)
+            }
+        }
 
     private let autoReplant: Bool = true
 
@@ -177,7 +189,7 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
             let locationInView = g.location(in: view)
             let locationInScene = convertPoint(fromView: locationInView)
             let oldScale = cam.xScale
-            var newScale = min(max(oldScale / g.scale, minCameraScale), maxCameraScale)
+            let newScale = min(max(oldScale / g.scale, minCameraScale), maxCameraScale)
             let scaleRatio = newScale / oldScale
             cam.position = CGPoint(x: locationInScene.x - (locationInScene.x - cam.position.x) * scaleRatio, y: locationInScene.y - (locationInScene.y - cam.position.y) * scaleRatio)
             cam.setScale(newScale)

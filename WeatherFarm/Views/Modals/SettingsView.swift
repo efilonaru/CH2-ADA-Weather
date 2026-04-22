@@ -2,11 +2,11 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var viewModel: GameViewModel
-    
+    @EnvironmentObject var worldManager: WorldEnvironmentManager
     var body: some View {
         List {
             Section(header: Text("Weather Control").font(.headline)) {
-                Picker("Current Climate", selection: $viewModel.currentWeather) {
+                Picker("Current Climate", selection: $worldManager.currentWeather) {
                     ForEach(WeatherCondition.allCases, id: \.self) { weather in
                         HStack {
                             Image(systemName: weather.icon)
