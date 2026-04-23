@@ -285,7 +285,7 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
                 if tileMap[k] == nil && !ghostPositions.contains(k) {
                     ghostPositions.insert(k)
                     let ghost = GhostTileNode(texture: baseTileTexture); ghost.size = tiles.first?.size ?? CGSize(width: 64, height: 64); ghost.anchorPoint = CGPoint(x: 0.5, y: 0.0)
-                    ghost.targetX = nx; ghost.targetY = ny; ghost.position = positionForGrid(x: nx, y: ny); ghost.alpha = 0.4; ghost.color = .white; ghost.colorBlendFactor = 0.3; ghost.zPosition = -ghost.position.y - 1; ghost.name = "ghost_tile"; addChild(ghost)
+                    ghost.targetX = nx; ghost.targetY = ny; ghost.position = positionForGrid(x: nx, y: ny); ghost.alpha = 0.7; ghost.color = .black; ghost.colorBlendFactor = 0.3; ghost.zPosition = -ghost.position.y - 1; ghost.name = "ghost_tile"; addChild(ghost)
                 }
             }
         }

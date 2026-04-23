@@ -11,7 +11,7 @@ enum WeatherCondition: String, Codable, CaseIterable {
     case sunny = "Sunny"
     case rain = "Rain"
     case cloudy = "Cloudy"
-    case extremeHeat = "Extreme Heat"
+    case extremeHeat = "ExtremeHeat"
     case snow = "Snow"
     
     var icon: String {
