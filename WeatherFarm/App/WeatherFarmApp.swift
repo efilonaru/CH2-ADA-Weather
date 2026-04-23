@@ -15,6 +15,7 @@ struct WeatherFarmApp: App {
             ContentView()
                 .environmentObject(worldManager)
                 .font(.minecraft())
+                .preferredColorScheme(ColorScheme.light)
         }
     }
 }

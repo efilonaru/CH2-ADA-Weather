@@ -36,5 +36,6 @@ struct WeatherDetailsView: View {
 
 #Preview {
     WeatherDetailsView()
+        .environmentObject(WorldEnvironmentManager())
 }
 

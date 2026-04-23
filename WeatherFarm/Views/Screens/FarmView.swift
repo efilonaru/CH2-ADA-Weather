@@ -33,26 +33,31 @@ struct FarmView: View {
     }
     
     var body: some View {
-        ZStack {
-            // TODO: CHANGE THIS MANUT MO APA TAPI WORLDMANAGER FOR NOW
-            SkyBackgroundView(weather: worldManager.currentWeather, time: worldManager.currentTime)
-            SpriteView(scene: scene, options: .allowsTransparency)
-                .ignoresSafeArea()
-                .onAppear {
-                    viewModel.worldManager = worldManager
-                    if let gs = scene as? GameScene {
-                        gs.gameViewModel = viewModel
-                        gs.worldManager = worldManager
-                    }
-                }
-            
-            VStack {
-                topBar
-                goldView
-                Spacer()
-                bottomBar
-            }
-            .padding()
+       NavigationStack {
+           ZStack {
+               // TODO: CHANGE THIS MANUT MO APA TAPI WORLDMANAGER FOR NOW
+               SkyBackgroundView(weather: worldManager.currentWeather, time: worldManager.currentTime)
+               SpriteView(scene: scene, options: .allowsTransparency)
+                   .ignoresSafeArea()
+                   .onAppear {
+                       viewModel.worldManager = worldManager
+                       if let gs = scene as? GameScene {
+                           gs.gameViewModel = viewModel
+                           gs.worldManager = worldManager
+                       }
+                   }
+               
+               VStack {
+                   NavigationLink(destination: WeatherDetailsView()){
+                       topBar
+                   }
+                   .buttonStyle(.plain)
+                   goldView
+                   Spacer()
+                   bottomBar
+               }
+               .padding()
+           }
         }
         .environmentObject(viewModel)
         .alert(viewModel.confirmationMessage, isPresented: $viewModel.showConfirmation) {
@@ -61,10 +66,6 @@ struct FarmView: View {
                 viewModel.onConfirm?()
             }
         }
-        .sheet(isPresented: $showingWeatherCalendar) {
-                    WeatherDetailsView()
-                .presentationDetents([.large])
-                }
         .sheet(isPresented: $viewModel.showShop) {
             ShopView()
                 .environmentObject(viewModel)
@@ -92,9 +93,6 @@ struct FarmView: View {
     
     var topBar: some View {
         WeatherForecast(data: todayHourly)
-            .onTapGesture {
-                showingWeatherCalendar = true
-            }
     }
     
     var goldView: some View {
