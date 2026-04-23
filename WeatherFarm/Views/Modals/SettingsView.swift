@@ -18,7 +18,7 @@ struct SettingsView: View {
                 .pickerStyle(.inline)
             }
             
-            Section(header: Text("Time Control").font(.headline)) {
+            Section(header: Text("Time Control").font(.minecraft(size: 16))) {
                 Picker("Current Time", selection: $worldManager.currentTime) {
                     ForEach(TimeOfDay.allCases, id: \.self) { time in
                         HStack {
@@ -50,18 +50,14 @@ struct SettingsView: View {
                     Text("Weather Bonus (20%)")
                     Spacer()
                     Text("+ 💰 \(viewModel.currentWeatherBonus)")
-                        .fontWeight(.bold)
-                        .foregroundColor(.green)
+                        .foregroundColor(.secondary)
                 }
-                
-                Divider()
                 
                 HStack {
                     Text("Potential Total Gold")
                     Spacer()
                     Text("💰 \(viewModel.potentialGoldSummary + viewModel.currentWeatherBonus)")
-                        .font(.headline)
-                        .foregroundColor(.yellow)
+                        .foregroundColor(.secondary)
                 }
                 
                 if !viewModel.plantedCrops.isEmpty {
