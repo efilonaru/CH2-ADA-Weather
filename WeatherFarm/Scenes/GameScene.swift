@@ -158,7 +158,25 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
             worldManager?.$currentWeather
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] newWeather in
-                    self?.currentWeather = newWeather
+                    guard let self = self else { return }
+                    
+                    self.currentWeather = newWeather
+                    
+                    if newWeather == .rain {
+                        if action(forKey: "rain_system") != nil { return }
+                            
+                            let spawn = SKAction.run { [weak self] in
+                                self?.spawnRainDrop()
+                            }
+                            
+                            let delay = SKAction.wait(forDuration: 0.02)
+                            let sequence = SKAction.sequence([spawn, delay])
+                            let loop = SKAction.repeatForever(sequence)
+                            
+                            run(loop, withKey: "rain_system")
+                    } else {
+                        removeAction(forKey: "rain_system")
+                    }
                 }
                 .store(in: &cancellables)
         }
@@ -606,5 +624,41 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         t.crop = nil
         t.texture = baseTileTexture
         t.colorBlendFactor = 0.0
+    }
+    
+    private func spawnRainDrop() {
+        let rain = SKSpriteNode(imageNamed: "raindrop")
+        rain.zPosition = 1000
+        
+        let camX = camera?.position.x ?? size.width / 2
+        let camY = camera?.position.y ?? size.height / 2
+        
+        let screenWidth = size.width * (camera?.xScale ?? 1.0)
+        let screenHeight = size.height * (camera?.yScale ?? 1.0)
+        
+        let spawnOffset: CGFloat = 300
+        let randomX = CGFloat.random(in: (camX - screenWidth/2)...(camX + screenWidth/2 + spawnOffset))
+        let startY = camY + screenHeight/2 + 50
+        
+        rain.position = CGPoint(x: randomX, y: startY)
+        
+        rain.zRotation = 0.4
+        
+        rain.alpha = CGFloat.random(in: 0.5...1.0)
+        rain.setScale(CGFloat.random(in: 0.8...1.2))
+        
+        addChild(rain)
+        
+        let fallDistanceX: CGFloat = -500
+        let fallDistanceY: CGFloat = -screenHeight - 150
+        
+        let fall = SKAction.moveBy(
+            x: fallDistanceX,
+            y: fallDistanceY,
+            duration: 0.8
+        )
+        
+        let remove = SKAction.removeFromParent()
+        rain.run(SKAction.sequence([fall, remove]))
     }
 }
