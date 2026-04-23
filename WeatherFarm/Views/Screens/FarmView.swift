@@ -98,8 +98,10 @@ struct FarmView: View {
             Spacer()
             
             HStack(spacing: 6) {
-                Image(systemName: "bitcoinsign.circle.fill")
-                    .foregroundColor(.yellow)
+                Image("coin")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 16, height: 16)
                 
                 Text("\(viewModel.gold)")
                     .font(.minecraft())

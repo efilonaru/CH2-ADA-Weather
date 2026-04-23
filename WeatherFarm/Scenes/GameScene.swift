@@ -531,8 +531,7 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
                 let tex = SKTexture(imageNamed: "\(base)\(stage)")
                 tex.filteringMode = .nearest
                 tile.texture = tex
-                let name = "\(base)\(stage)"
-                print("Loading texture:", name)
+//                let name = "\(base)\(stage)"
             } else {
                 tile.color =
                     progress < 0.33
@@ -563,7 +562,8 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
             y: tile.gridY,
             goldAwarded: totalAward
         )
-
+        showFloatingGold(at: tile.position, amount: totalAward)
+        
         if autoReplant {
             tile.plantedAt = Date().timeIntervalSince1970
             tile.harvested = false
@@ -616,6 +616,7 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
                 y: y,
                 goldAwarded: totalAward
             )
+            showFloatingGold(at: t.position, amount: totalAward)
         }
 
         t.hasCrop = false
@@ -660,5 +661,32 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         
         let remove = SKAction.removeFromParent()
         rain.run(SKAction.sequence([fall, remove]))
+    }
+    
+    private func showFloatingGold(at position: CGPoint, amount: Int) {
+        let label = SKLabelNode(fontNamed: "Minecraft")
+        label.text = "+\(amount)"
+        label.fontSize = 16
+        label.fontColor = .yellow
+        
+        label.position = CGPoint(x: position.x, y: position.y + 40)
+        
+        label.zPosition = 2000
+        label.alpha = 0.0
+        
+        addChild(label)
+        
+        let fadeIn = SKAction.fadeIn(withDuration: 0.1)
+        let moveUp = SKAction.moveBy(x: 0, y: 30, duration: 0.6)
+        let fadeOut = SKAction.fadeOut(withDuration: 0.6)
+        
+        let group = SKAction.group([moveUp, fadeOut])
+        let sequence = SKAction.sequence([
+            fadeIn,
+            group,
+            .removeFromParent()
+        ])
+        
+        label.run(sequence)
     }
 }

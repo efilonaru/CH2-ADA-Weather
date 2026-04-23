@@ -35,6 +35,10 @@ struct SettingsView: View {
                 HStack {
                     Text("Planted Crops")
                     Spacer()
+                    Image("coin")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
                     Text("\(viewModel.plantedCrops.count)")
                         .foregroundColor(.secondary)
                 }
@@ -42,21 +46,33 @@ struct SettingsView: View {
                 HStack {
                     Text("Total Base Value")
                     Spacer()
-                    Text("💰 \(viewModel.potentialGoldSummary)")
+                    Image("coin")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                    Text("\(viewModel.potentialGoldSummary)")
                         .foregroundColor(.secondary)
                 }
                 
                 HStack {
                     Text("Weather Bonus (20%)")
                     Spacer()
-                    Text("+ 💰 \(viewModel.currentWeatherBonus)")
+                    Image("coin")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                    Text("\(viewModel.currentWeatherBonus)")
                         .foregroundColor(.secondary)
                 }
                 
                 HStack {
                     Text("Potential Total Gold")
                     Spacer()
-                    Text("💰 \(viewModel.potentialGoldSummary + viewModel.currentWeatherBonus)")
+                    Image("coin")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                    Text("\(viewModel.potentialGoldSummary + viewModel.currentWeatherBonus)")
                         .foregroundColor(.secondary)
                 }
                 
