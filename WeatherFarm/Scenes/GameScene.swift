@@ -308,8 +308,10 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
             let multiplier: Double = (crop.preferredWeather == currentWeather) ? 1.5 : 1.0
             let progress = tile.growthProgress(currentTime: Date().timeIntervalSince1970, weatherMultiplier: multiplier)
             if let base = crop.textureName, !base.isEmpty {
-                let stage = progress < 0.33 ? "_seed" : (progress < 0.66 ? "_early" : "_ripe")
+                let stage = progress < 0.33 ? "_seed" : (progress < 0.66 ? "_seedling" : "_harvest")
                 let tex = SKTexture(imageNamed: "\(base)\(stage)"); tex.filteringMode = .nearest; tile.texture = tex
+                let name = "\(base)\(stage)"
+                print("Loading texture:", name)
             } else {
                 tile.color = progress < 0.33 ? UIColor.systemGreen.withAlphaComponent(0.25) : (progress < 0.66 ? UIColor.systemGreen.withAlphaComponent(0.45) : (progress < 1.0 ? UIColor.systemOrange.withAlphaComponent(0.45) : UIColor.systemYellow.withAlphaComponent(0.6)))
                 tile.colorBlendFactor = progress < 0.33 ? 0.25 : (progress < 0.66 ? 0.45 : (progress < 1.0 ? 0.45 : 0.6))
@@ -321,14 +323,22 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
     private func performAutoHarvestAndReplant(tile: TileNode) {
         guard tile.hasCrop, let crop = tile.crop else { return }
         
-        // Calculate 20% bonus if weather matches
         let isPreferred = (crop.preferredWeather == currentWeather)
         let bonus = isPreferred ? Int(Double(crop.value) * 0.2) : 0
         let totalAward = crop.value + bonus
         
         gameViewModel?.notifyAutoHarvest(x: tile.gridX, y: tile.gridY, goldAwarded: totalAward)
         
-        if autoReplant { tile.plantedAt = Date().timeIntervalSince1970; tile.harvested = false }
+        if autoReplant {
+            tile.plantedAt = Date().timeIntervalSince1970
+            tile.harvested = false
+
+            if let baseName = crop.textureName, !baseName.isEmpty {
+                let seedTex = SKTexture(imageNamed: "\(baseName)_seed")
+                seedTex.filteringMode = .nearest
+                tile.texture = seedTex
+            }
+        }
         else { tile.hasCrop = false; tile.plantedAt = nil; tile.harvested = true; tile.crop = nil; tile.texture = baseTileTexture; tile.colorBlendFactor = 0.0 }
     }
 
