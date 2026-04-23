@@ -47,18 +47,20 @@ struct FarmView: View {
                        }
                    }
                
-               VStack {
+               VStack(spacing: 0) {
                    NavigationLink(destination: WeatherDetailsView()){
-                       topBar
+                       WeatherForecast(data: todayHourly)
                    }
                    .buttonStyle(.plain)
+                   
                    goldView
+                       .padding(8)
                    Spacer()
                    bottomBar
                }
-               .padding()
            }
         }
+        .toolbar(.hidden, for: .navigationBar)
         .environmentObject(viewModel)
         .alert(viewModel.confirmationMessage, isPresented: $viewModel.showConfirmation) {
             Button("Cancel", role: .cancel) { }
@@ -89,10 +91,6 @@ struct FarmView: View {
                 .presentationDetents([.medium])
                 .environmentObject(viewModel)
         }
-    }
-    
-    var topBar: some View {
-        WeatherForecast(data: todayHourly)
     }
     
     var goldView: some View {
