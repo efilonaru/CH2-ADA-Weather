@@ -8,7 +8,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "153E91D8-BDEA-4CFF-8257-6A7A5ED0E380"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WeatherFarm/Scenes/GameScene.swift"
@@ -16,8 +16,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "512"
             endingLineNumber = "512"
-            landmarkName = "touchesBegan(_:with:)"
-            landmarkType = "7">
+            landmarkName = "GameScene"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

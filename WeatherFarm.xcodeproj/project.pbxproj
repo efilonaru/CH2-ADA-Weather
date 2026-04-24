@@ -6,7 +6,41 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		7FE8D37F2F9BC4CA00108416 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE8D37E2F9BC4CA00108416 /* WidgetKit.framework */; };
+		7FE8D3812F9BC4CA00108416 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE8D3802F9BC4CA00108416 /* SwiftUI.framework */; };
+		7FE8D3922F9BC4CB00108416 /* FarmWeatherWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7FE8D37C2F9BC4CA00108416 /* FarmWeatherWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		7FE8D3902F9BC4CB00108416 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C90B49E32F94F963005B5684 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7FE8D37B2F9BC4CA00108416;
+			remoteInfo = FarmWeatherWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		7FE8D3972F9BC4CB00108416 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				7FE8D3922F9BC4CB00108416 /* FarmWeatherWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		7FE8D37C2F9BC4CA00108416 /* FarmWeatherWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FarmWeatherWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7FE8D37E2F9BC4CA00108416 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		7FE8D3802F9BC4CA00108416 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		7FE8D39A2F9BC5BB00108416 /* FarmWeatherWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FarmWeatherWidgetExtension.entitlements; sourceTree = "<group>"; };
 		C90B49EB2F94F963005B5684 /* WeatherFarm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherFarm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -18,13 +52,39 @@
 			);
 			target = C90B49EA2F94F963005B5684 /* WeatherFarm */;
 		};
+		7FE8D3962F9BC4CB00108416 /* Exceptions for "FarmWeatherWidget" folder in "FarmWeatherWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 7FE8D37B2F9BC4CA00108416 /* FarmWeatherWidgetExtension */;
+		};
+		7FE8D3992F9BC57100108416 /* Exceptions for "WeatherFarm" folder in "FarmWeatherWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				Managers/SharedDatabaseManager.swift,
+				Models/SaveDataModels.swift,
+				Models/WeatherCondition.swift,
+			);
+			target = 7FE8D37B2F9BC4CA00108416 /* FarmWeatherWidgetExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		7FE8D3822F9BC4CA00108416 /* FarmWeatherWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				7FE8D3962F9BC4CB00108416 /* Exceptions for "FarmWeatherWidget" folder in "FarmWeatherWidgetExtension" target */,
+			);
+			path = FarmWeatherWidget;
+			sourceTree = "<group>";
+		};
 		C90B49ED2F94F963005B5684 /* WeatherFarm */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				7F5862002F989D9A00EBEDA7 /* Exceptions for "WeatherFarm" folder in "WeatherFarm" target */,
+				7FE8D3992F9BC57100108416 /* Exceptions for "WeatherFarm" folder in "FarmWeatherWidgetExtension" target */,
 			);
 			path = WeatherFarm;
 			sourceTree = "<group>";
@@ -32,6 +92,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		7FE8D3792F9BC4CA00108416 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7FE8D3812F9BC4CA00108416 /* SwiftUI.framework in Frameworks */,
+				7FE8D37F2F9BC4CA00108416 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C90B49E82F94F963005B5684 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -42,10 +111,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7FE8D37D2F9BC4CA00108416 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7FE8D37E2F9BC4CA00108416 /* WidgetKit.framework */,
+				7FE8D3802F9BC4CA00108416 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C90B49E22F94F963005B5684 = {
 			isa = PBXGroup;
 			children = (
+				7FE8D39A2F9BC5BB00108416 /* FarmWeatherWidgetExtension.entitlements */,
 				C90B49ED2F94F963005B5684 /* WeatherFarm */,
+				7FE8D3822F9BC4CA00108416 /* FarmWeatherWidget */,
+				7FE8D37D2F9BC4CA00108416 /* Frameworks */,
 				C90B49EC2F94F963005B5684 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				C90B49EB2F94F963005B5684 /* WeatherFarm.app */,
+				7FE8D37C2F9BC4CA00108416 /* FarmWeatherWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -61,6 +143,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		7FE8D37B2F9BC4CA00108416 /* FarmWeatherWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7FE8D3932F9BC4CB00108416 /* Build configuration list for PBXNativeTarget "FarmWeatherWidgetExtension" */;
+			buildPhases = (
+				7FE8D3782F9BC4CA00108416 /* Sources */,
+				7FE8D3792F9BC4CA00108416 /* Frameworks */,
+				7FE8D37A2F9BC4CA00108416 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				7FE8D3822F9BC4CA00108416 /* FarmWeatherWidget */,
+			);
+			name = FarmWeatherWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = FarmWeatherWidgetExtension;
+			productReference = 7FE8D37C2F9BC4CA00108416 /* FarmWeatherWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		C90B49EA2F94F963005B5684 /* WeatherFarm */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C90B49F62F94F964005B5684 /* Build configuration list for PBXNativeTarget "WeatherFarm" */;
@@ -68,10 +172,12 @@
 				C90B49E72F94F963005B5684 /* Sources */,
 				C90B49E82F94F963005B5684 /* Frameworks */,
 				C90B49E92F94F963005B5684 /* Resources */,
+				7FE8D3972F9BC4CB00108416 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				7FE8D3912F9BC4CB00108416 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				C90B49ED2F94F963005B5684 /* WeatherFarm */,
@@ -93,6 +199,9 @@
 				LastSwiftUpdateCheck = 2640;
 				LastUpgradeCheck = 2640;
 				TargetAttributes = {
+					7FE8D37B2F9BC4CA00108416 = {
+						CreatedOnToolsVersion = 26.4.1;
+					};
 					C90B49EA2F94F963005B5684 = {
 						CreatedOnToolsVersion = 26.4;
 					};
@@ -113,11 +222,19 @@
 			projectRoot = "";
 			targets = (
 				C90B49EA2F94F963005B5684 /* WeatherFarm */,
+				7FE8D37B2F9BC4CA00108416 /* FarmWeatherWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		7FE8D37A2F9BC4CA00108416 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C90B49E92F94F963005B5684 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -128,6 +245,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		7FE8D3782F9BC4CA00108416 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C90B49E72F94F963005B5684 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -137,7 +261,79 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		7FE8D3912F9BC4CB00108416 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7FE8D37B2F9BC4CA00108416 /* FarmWeatherWidgetExtension */;
+			targetProxy = 7FE8D3902F9BC4CB00108416 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		7FE8D3942F9BC4CB00108416 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = FarmWeatherWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H9J3TN99GS;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FarmWeatherWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FarmWeatherWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.naufal.WeatherFarm.FarmWeatherWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7FE8D3952F9BC4CB00108416 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = FarmWeatherWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H9J3TN99GS;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FarmWeatherWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FarmWeatherWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.naufal.WeatherFarm.FarmWeatherWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		C90B49F42F94F964005B5684 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -266,7 +462,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4YBFFYG9L2;
+				DEVELOPMENT_TEAM = H9J3TN99GS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WeatherFarm/Info.plist;
@@ -280,7 +476,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.naufal.WeatherFarmm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.naufal.WeatherFarm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -302,7 +498,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4YBFFYG9L2;
+				DEVELOPMENT_TEAM = H9J3TN99GS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WeatherFarm/Info.plist;
@@ -316,7 +512,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.naufal.WeatherFarmm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.naufal.WeatherFarm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -332,6 +528,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7FE8D3932F9BC4CB00108416 /* Build configuration list for PBXNativeTarget "FarmWeatherWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7FE8D3942F9BC4CB00108416 /* Debug */,
+				7FE8D3952F9BC4CB00108416 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C90B49E62F94F963005B5684 /* Build configuration list for PBXProject "WeatherFarm" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

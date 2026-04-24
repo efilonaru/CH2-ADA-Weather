@@ -681,7 +681,7 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
     
     private func spawnSnow() {
         let screenHeight = size.height * (camera?.yScale ?? 1.0)
-        
+         
         spawnWeatherParticle(
             imageName: "snow",
             zRotation: 0,
