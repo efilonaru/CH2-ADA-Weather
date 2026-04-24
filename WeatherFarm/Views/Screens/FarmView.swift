@@ -6,9 +6,11 @@
 //
 import SwiftUI
 import SpriteKit
+import SwiftData
 
 struct FarmView: View {
     @EnvironmentObject var worldManager : WorldEnvironmentManager
+    @Environment(\.modelContext) private var modelContext
     @State private var showingWeatherCalendar = false
     @StateObject private var viewModel = GameViewModel()
     @State private var scene: SKScene = {
@@ -40,10 +42,13 @@ struct FarmView: View {
                SpriteView(scene: scene, options: .allowsTransparency)
                    .ignoresSafeArea()
                    .onAppear {
+                       viewModel.modelContext = modelContext
                        viewModel.worldManager = worldManager
+                       viewModel.loadSavedGameState()
                        if let gs = scene as? GameScene {
                            gs.gameViewModel = viewModel
                            gs.worldManager = worldManager
+                           gs.restoreSavedTiles(savedData: viewModel.savedTilesData, availbleCrops: viewModel.crops)
                        }
                    }
                

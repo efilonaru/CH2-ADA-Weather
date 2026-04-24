@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import SwiftData
 
 struct TileSelection: Identifiable, Equatable {
     let id = UUID()
@@ -21,8 +22,12 @@ struct HarvestRequest {
 
 final class GameViewModel: ObservableObject {
     var worldManager: WorldEnvironmentManager?
+    var modelContext: ModelContext?
     @Published var selectedTile: TileSelection? = nil
     @Published var gold: Int = 100
+    
+    var savedTilesData: [TileSaveData] = []
+    
     
     // Inventory: Mapping of Crop name to quantity owned
     @Published var inventory: [String: Int] = [
@@ -62,6 +67,57 @@ final class GameViewModel: ObservableObject {
                     let bonus = (crop.preferredWeather == currentTargetWeather) ? Int(Double(crop.value) * 0.2) : 0
                     return sum + bonus
                 }
+    }
+    
+    var averageGoldPerCrop: Double {
+        guard !plantedCrops.isEmpty else { return 0.0 }
+        let total = Double(gold) + Double(currentWeatherBonus)
+        return total / Double(plantedCrops.count)
+    }
+    
+    func loadSavedGameState(){
+        guard let modelContext else { return }
+        
+        let goldDescriptor = FetchDescriptor<GameStateSaveData>()
+        if let savedState = (try? modelContext.fetch(goldDescriptor))?.first {
+            self.gold = savedState.totalGold
+        } else {
+            let newState = GameStateSaveData(totalGold: 100)
+            modelContext.insert(newState)
+        }
+        
+        let tileDescriptor = FetchDescriptor<TileSaveData>()
+        if let savedTiles = try? modelContext.fetch(tileDescriptor) {
+            for tile in savedTiles where tile.hasCrop {
+                
+            }
+        }
+    }
+    
+    func savePlantedCrop (x: Int, y:Int, textureName: String){
+        guard let context = modelContext else { return }
+        let newSaveTile = TileSaveData(gridX: x, gridY: y, hasCrop: true, cropTextureName: textureName, plantedAt: Date(), harvested: false)
+        
+        context.insert(newSaveTile)
+        try? context.save()
+    }
+    
+    func saveHarvested (x: Int, y:Int, goldEarned:Int){
+        guard let context = modelContext else { return }
+        
+        let descriptor = FetchDescriptor<TileSaveData>(predicate: #Predicate{$0.gridX == x && $0.gridY == y})
+        
+        if let tileToUpdate = try? context.fetch(descriptor).first {
+            tileToUpdate.hasCrop = false
+            tileToUpdate.harvested = true
+        }
+        
+        let goldDescriptor = FetchDescriptor<GameStateSaveData>()
+        if let savedState = (try? context.fetch(goldDescriptor))?.first {
+            savedState.totalGold += goldEarned
+            self.gold = savedState.totalGold
+        }
+        try? context.save()
     }
 
     func selectTile(x: Int, y: Int) {
