@@ -732,4 +732,25 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         
         label.run(sequence)
     }
+    
+    func restoreSavedTiles(savedData: [TileSaveData], availbleCrops: [CropModel]){
+        for data in savedData {
+            guard data.hasCrop, let targetTile = tiles.first(where: { $0.gridX == data.gridX && $0.gridY == data.gridY }) else { continue }
+            guard let cropModel = availbleCrops.first(where: { $0.textureName == data.cropTextureName}) else { continue }
+            
+            targetTile.hasCrop = true
+            targetTile.crop = cropModel
+            
+            targetTile.plantedAt = data.plantedAt?.timeIntervalSince1970
+            
+            targetTile.baseGrowthDuration = cropModel.baseGrowthDuration
+            targetTile.harvested = data.harvested
+            
+            if let tex = cropModel.textureName, !tex.isEmpty {
+                let seedTex = SKTexture(imageNamed: "\(tex)_seed")
+                seedTex.filteringMode = .nearest
+                targetTile.texture = seedTex
+            }
+        }
+    }
 }
