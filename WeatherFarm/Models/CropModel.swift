@@ -17,6 +17,8 @@ struct CropModel: Identifiable, Codable, Equatable {
         CropModel(name: "Kale", baseGrowthDuration: 8, textureName: "kale", value: 10, buyPrice: 6, preferredWeather: .snow),
         CropModel(name: "Frost Berries", baseGrowthDuration: 16, textureName: "frostberries", value: 16, buyPrice: 12, preferredWeather: .snow),
         CropModel(name: "Cactus", baseGrowthDuration: 18, textureName: "cactus", value: 12, buyPrice: 6, preferredWeather: .extremeHeat),
-        CropModel(name: "Wheat", baseGrowthDuration: 15, textureName: "wheat", value: 20, buyPrice: 8, preferredWeather: .extremeHeat)
+        CropModel(name: "Wheat", baseGrowthDuration: 15, textureName: "wheat", value: 20, buyPrice: 8, preferredWeather: .extremeHeat),
+        CropModel(name: "Radish", baseGrowthDuration: 15, textureName: "radish", value: 10, buyPrice: 8, preferredWeather: .cloudy),
+        CropModel(name: "Potato", baseGrowthDuration: 15, textureName: "potato", value: 16, buyPrice: 12, preferredWeather: .cloudy),
     ]
 }

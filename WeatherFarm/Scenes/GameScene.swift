@@ -163,19 +163,15 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
                     self.currentWeather = newWeather
                     
                     if newWeather == .rain {
-                        if action(forKey: "rain_system") != nil { return }
-                            
-                            let spawn = SKAction.run { [weak self] in
-                                self?.spawnRainDrop()
-                            }
-                            
-                            let delay = SKAction.wait(forDuration: 0.02)
-                            let sequence = SKAction.sequence([spawn, delay])
-                            let loop = SKAction.repeatForever(sequence)
-                            
-                            run(loop, withKey: "rain_system")
+                        startWeatherSystem {
+                            self.spawnRainDrop()
+                        }
+                    } else if newWeather == .snow {
+                        startWeatherSystem {
+                            self.spawnSnow()
+                        }
                     } else {
-                        removeAction(forKey: "rain_system")
+                        removeAction(forKey: "weather_system")
                     }
                 }
                 .store(in: &cancellables)
@@ -627,10 +623,20 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         t.colorBlendFactor = 0.0
     }
     
-    private func spawnRainDrop() {
-        let rain = SKSpriteNode(imageNamed: "raindrop")
-        rain.zPosition = 1000
+    private func spawnWeatherParticle(
+        imageName: String,
+        zRotation: CGFloat,
+        alphaRange: ClosedRange<CGFloat>,
+        scaleRange: ClosedRange<CGFloat>,
+        moveX: CGFloat,
+        moveY: CGFloat,
+        duration: TimeInterval
+    ) {
+        let node = SKSpriteNode(imageNamed: imageName)
+        node.name = "weather_particle"
+        node.zPosition = 1000
         
+        // Camera-based spawn area
         let camX = camera?.position.x ?? size.width / 2
         let camY = camera?.position.y ?? size.height / 2
         
@@ -638,29 +644,66 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         let screenHeight = size.height * (camera?.yScale ?? 1.0)
         
         let spawnOffset: CGFloat = 300
-        let randomX = CGFloat.random(in: (camX - screenWidth/2)...(camX + screenWidth/2 + spawnOffset))
+        let randomX = CGFloat.random(
+            in: (camX - screenWidth/2)...(camX + screenWidth/2 + spawnOffset)
+        )
         let startY = camY + screenHeight/2 + 50
         
-        rain.position = CGPoint(x: randomX, y: startY)
+        node.position = CGPoint(x: randomX, y: startY)
         
-        rain.zRotation = 0.4
+        // Appearance
+        node.zRotation = zRotation
+        node.alpha = CGFloat.random(in: alphaRange)
+        node.setScale(CGFloat.random(in: scaleRange))
         
-        rain.alpha = CGFloat.random(in: 0.5...1.0)
-        rain.setScale(CGFloat.random(in: 0.8...1.2))
+        addChild(node)
         
-        addChild(rain)
+        // Movement
+        let move = SKAction.moveBy(x: moveX, y: moveY, duration: duration)
+        let remove = SKAction.removeFromParent()
         
-        let fallDistanceX: CGFloat = -500
-        let fallDistanceY: CGFloat = -screenHeight - 150
+        node.run(.sequence([move, remove]))
+    }
+    
+    private func spawnRainDrop() {
+        let screenHeight = size.height * (camera?.yScale ?? 1.0)
         
-        let fall = SKAction.moveBy(
-            x: fallDistanceX,
-            y: fallDistanceY,
+        spawnWeatherParticle(
+            imageName: "raindrop",
+            zRotation: 0.4,
+            alphaRange: 0.5...1.0,
+            scaleRange: 0.8...1.2,
+            moveX: -500,
+            moveY: -screenHeight - 150,
             duration: 0.8
         )
+    }
+    
+    private func spawnSnow() {
+        let screenHeight = size.height * (camera?.yScale ?? 1.0)
         
-        let remove = SKAction.removeFromParent()
-        rain.run(SKAction.sequence([fall, remove]))
+        spawnWeatherParticle(
+            imageName: "snow",
+            zRotation: 0,
+            alphaRange: 0.7...1.0,
+            scaleRange: 0.5...1.0,
+            moveX: CGFloat.random(in: -50...50),
+            moveY: -screenHeight - 150,
+            duration: 3.0
+        )
+    }
+    
+    private func startWeatherSystem(
+        interval: TimeInterval = 0.02,
+        spawn: @escaping () -> Void
+    ) {
+        removeAction(forKey: "weather_system")
+        
+        let spawnAction = SKAction.run { spawn() }
+        let delay = SKAction.wait(forDuration: interval)
+        let loop = SKAction.repeatForever(.sequence([spawnAction, delay]))
+        
+        run(loop, withKey: "weather_system")
     }
     
     private func showFloatingGold(at position: CGPoint, amount: Int) {

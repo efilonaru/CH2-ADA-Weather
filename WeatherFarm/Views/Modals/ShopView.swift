@@ -14,10 +14,9 @@ struct ShopView: View {
     var body: some View {
         VStack(spacing: 20) {
             Text("Seed Shop")
-                .font(.system(.title2, design: .rounded, weight: .bold))
+                .font(.minecraft(size: 24))
                 .padding(.top)
             
-            // Climate Filter
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     FilterButton(title: "All", isSelected: selectedClimate == nil) {
@@ -36,7 +35,6 @@ struct ShopView: View {
                 .padding(.horizontal)
             }
             
-            // Shop Grid
             ScrollView {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
                     ForEach(filteredCrops) { crop in
@@ -58,7 +56,7 @@ struct FilterButton: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.subheadline)
+                .font(.minecraft(size: 14))
                 .fontWeight(.medium)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
@@ -76,28 +74,42 @@ struct ShopItemCard: View {
     
     var body: some View {
         VStack(spacing: 12) {
-            ZStack(alignment: .topTrailing) {
+            ZStack {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.white)
                     .frame(height: 120)
-                
-                Image(systemName: crop.preferredWeather.icon)
-                    .foregroundColor(.blue.opacity(0.6))
-                    .padding(8)
+
+                if let texture = crop.textureName, !texture.isEmpty {
+                    Image("\(texture)_harvest")
+                        .resizable()
+                        .interpolation(.none)
+                        .scaledToFit()
+                        .frame(width: 80, height: 80)
+                } else {
+                    Text(crop.name.prefix(1))
+                        .font(.minecraft(size: 16))
+                }
+
+                VStack {
+                    HStack {
+                        Spacer()
+                        Image(systemName: crop.preferredWeather.icon)
+                            .foregroundColor(.blue.opacity(0.6))
+                    }
+                    Spacer()
+                }
+                .padding(8)
             }
-            .overlay(
-                Text(crop.name.prefix(1))
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-            )
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(crop.name)
-                    .font(.headline)
+                    .font(.minecraft(size: 14))
                 
                 HStack {
-                    Image(systemName: "bitcoinsign.circle.fill")
-                        .foregroundColor(.yellow)
+                    Image("coin")
+                        .resizable()
+                        .frame(width: 16, height: 16)
+                    
                     Text("\(crop.buyPrice)")
                         .fontWeight(.bold)
                 }
@@ -122,4 +134,8 @@ struct ShopItemCard: View {
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.05), radius: 5)
     }
+}
+
+#Preview {
+    ShopView()
 }

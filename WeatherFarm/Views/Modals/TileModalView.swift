@@ -14,7 +14,7 @@ struct TileModalView: View {
                 .padding(.top, 8)
 
             Text("Tile (\(gridX), \(gridY))")
-                .font(.headline)
+                .font(.minecraft(size: 16))
 
             if viewModel.isEditMode {
                 Button(action: {
@@ -53,37 +53,18 @@ struct TileModalView: View {
                 .padding()
             } else {
                 Text("Select a seed to plant")
-                    .font(.subheadline)
+                    .font(.minecraft(size: 12))
                     .foregroundColor(.secondary)
 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
                         ForEach(ownedCrops) { crop in
+                            let count = viewModel.inventory[crop.name] ?? 0
+
                             Button(action: {
                                 viewModel.requestPlant(crop: crop)
                             }) {
-                                VStack {
-                                    ZStack(alignment: .bottomTrailing) {
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .fill(Color.green.opacity(0.1))
-                                            .frame(width: 70, height: 70)
-                                            .overlay(
-                                                Text(crop.name.prefix(1))
-                                                    .font(.title)
-                                            )
-                                        
-                                        Text("\(viewModel.inventory[crop.name] ?? 0)")
-                                            .font(.caption2)
-                                            .fontWeight(.bold)
-                                            .padding(4)
-                                            .background(Color.blue)
-                                            .foregroundColor(.white)
-                                            .clipShape(Circle())
-                                    }
-
-                                    Text(crop.name)
-                                        .font(.caption)
-                                }
+                                InventoryItemCard(crop: crop, count: count)
                             }
                             .buttonStyle(.plain)
                         }
@@ -95,7 +76,7 @@ struct TileModalView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity)
-        .background(Color(UIColor.systemBackground))
+        .background(Color(UIColor.systemGroupedBackground))
         .cornerRadius(16)
     }
 }
