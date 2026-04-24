@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct WeatherFarmApp: App {
@@ -17,5 +18,6 @@ struct WeatherFarmApp: App {
                 .font(.minecraft())
                 .preferredColorScheme(ColorScheme.light)
         }
+        .modelContainer(SharedDatabaseManager.shared.container)
     }
 }
