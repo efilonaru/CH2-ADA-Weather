@@ -19,7 +19,6 @@ struct WeatherForecast: View {
 
     var body: some View {
         HStack(spacing: 0) {
-
             if let first = data.first {
                 HourItemView(item: first)
                     .frame(width: 70)
@@ -32,11 +31,12 @@ struct WeatherForecast: View {
                             .frame(width: 70)
                     }
                 }
-                .padding(.vertical, 8)
             }
         }
-        .background(Color(.systemGray6))
-        
+
+        .background(.ultraThinMaterial
+            .opacity(0.8))
+
     }
 }
 
