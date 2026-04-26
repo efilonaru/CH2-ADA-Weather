@@ -31,9 +31,11 @@ class TileSaveData {
 class GameStateSaveData {
     var totalGold: Int
     var lastSavedDate: Date
+    var inventory: [String: Int]
     
-    init(totalGold: Int = 100, lastSavedDate: Date = Date()) {
+    init(totalGold: Int = 100, lastSavedDate: Date = Date(), inventory: [String: Int] = ["Corn": 5]) {
         self.totalGold = totalGold
         self.lastSavedDate = lastSavedDate
+        self.inventory = inventory
     }
 }
