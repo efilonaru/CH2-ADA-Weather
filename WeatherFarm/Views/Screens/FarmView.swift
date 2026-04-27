@@ -11,6 +11,7 @@ import SwiftData
 struct FarmView: View {
     @EnvironmentObject var worldManager : WorldEnvironmentManager
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
     @State private var showingWeatherCalendar = false
     @StateObject private var viewModel = GameViewModel()
     @State private var scene: SKScene = {
@@ -48,7 +49,6 @@ struct FarmView: View {
                        if let gs = scene as? GameScene {
                            gs.gameViewModel = viewModel
                            gs.worldManager = worldManager
-                           gs.restoreSavedTiles(savedData: viewModel.savedTilesData, availbleCrops: viewModel.crops)
                        }
                    }
                
@@ -69,7 +69,7 @@ struct FarmView: View {
         .environmentObject(viewModel)
         .alert(viewModel.confirmationMessage, isPresented: $viewModel.showConfirmation) {
             Button("Cancel", role: .cancel) { }
-            Button("Buy") {
+            Button("OK") {
                 viewModel.onConfirm?()
             }
         }
@@ -95,6 +95,14 @@ struct FarmView: View {
             TileModalView(gridX: selection.gridX, gridY: selection.gridY)
                 .presentationDetents([.medium])
                 .environmentObject(viewModel)
+        }
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            if newPhase == .background || newPhase == .inactive {
+                if let gs = scene as? GameScene {
+                    gs.syncToSwiftData(modelContext: modelContext)
+                }
+                viewModel.saveGameState()
+            }
         }
     }
 }

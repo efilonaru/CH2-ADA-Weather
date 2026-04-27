@@ -8,10 +8,11 @@
 import Combine
 import SpriteKit
 import UIKit
+import SwiftData
 
 class GameScene: SKScene, UIGestureRecognizerDelegate {
 
-    // Base tile metrics are derived from the tile texture once loaded.
+
     private var diamondWidth: CGFloat = 0
     private var diamondHeight: CGFloat = 0
 
@@ -149,6 +150,11 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
                     )
                 }
             }.store(in: &cancellables)
+
+            // Auto-restore if tiles are already drawn
+            if !tiles.isEmpty, let context = gameViewModel?.modelContext {
+                restoreSavedTiles(modelContext: context, availableCrops: gameViewModel?.crops ?? [])
+            }
         }
     }
 
@@ -215,6 +221,11 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
 
         drawGrid(rows: 3, cols: 3)
         self.gridBounds = computeGridBounds()
+
+        // Restore tiles after grid is ready
+        if let context = gameViewModel?.modelContext {
+            restoreSavedTiles(modelContext: context, availableCrops: gameViewModel?.crops ?? [])
+        }
 
         if let v = self.view {
             let viewSize = v.bounds.size
@@ -553,15 +564,18 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         let bonus = isPreferred ? Int(Double(crop.value) * 0.2) : 0
         let totalAward = crop.value + bonus
 
+        let newPlantedDate = autoReplant ? Date() : nil
+        
         gameViewModel?.notifyAutoHarvest(
             x: tile.gridX,
             y: tile.gridY,
-            goldAwarded: totalAward
+            goldAwarded: totalAward,
+            newPlantedDate: newPlantedDate
         )
         showFloatingGold(at: tile.position, amount: totalAward)
         
         if autoReplant {
-            tile.plantedAt = Date().timeIntervalSince1970
+            tile.plantedAt = newPlantedDate?.timeIntervalSince1970
             tile.harvested = false
 
             if let baseName = crop.textureName, !baseName.isEmpty {
@@ -610,7 +624,8 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
             gameViewModel?.notifyAutoHarvest(
                 x: x,
                 y: y,
-                goldAwarded: totalAward
+                goldAwarded: totalAward,
+                newPlantedDate: nil
             )
             showFloatingGold(at: t.position, amount: totalAward)
         }
@@ -733,24 +748,60 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         label.run(sequence)
     }
     
-    func restoreSavedTiles(savedData: [TileSaveData], availbleCrops: [CropModel]){
-        for data in savedData {
-            guard data.hasCrop, let targetTile = tiles.first(where: { $0.gridX == data.gridX && $0.gridY == data.gridY }) else { continue }
-            guard let cropModel = availbleCrops.first(where: { $0.textureName == data.cropTextureName}) else { continue }
+    func restoreSavedTiles(modelContext: ModelContext, availableCrops: [CropModel]) {
+        let descriptor = FetchDescriptor<TileSaveData>()
+        guard let savedTiles = try? modelContext.fetch(descriptor) else { return }
+        
+        for data in savedTiles {
+            guard let targetTile = tiles.first(where: { $0.gridX == data.gridX && $0.gridY == data.gridY }) else { continue }
             
-            targetTile.hasCrop = true
-            targetTile.crop = cropModel
-            
+            targetTile.hasCrop = data.hasCrop
+            targetTile.harvested = data.harvested
             targetTile.plantedAt = data.plantedAt?.timeIntervalSince1970
             
-            targetTile.baseGrowthDuration = cropModel.baseGrowthDuration
-            targetTile.harvested = data.harvested
-            
-            if let tex = cropModel.textureName, !tex.isEmpty {
-                let seedTex = SKTexture(imageNamed: "\(tex)_seed")
-                seedTex.filteringMode = .nearest
-                targetTile.texture = seedTex
+            if data.hasCrop, let cropName = data.cropTextureName,
+               let cropModel = availableCrops.first(where: { $0.textureName == cropName }) {
+                targetTile.crop = cropModel
+                targetTile.baseGrowthDuration = cropModel.baseGrowthDuration
+                
+                let progress = targetTile.growthProgress()
+                let stage = progress < 0.33 ? "_seed" : (progress < 0.66 ? "_seedling" : "_harvest")
+                if let texName = cropModel.textureName {
+                    let tex = SKTexture(imageNamed: "\(texName)\(stage)")
+                    tex.filteringMode = .nearest
+                    targetTile.texture = tex
+                }
+            } else {
+                targetTile.crop = nil
+                targetTile.texture = baseTileTexture
+                targetTile.colorBlendFactor = 0.0
             }
         }
     }
+
+    func syncToSwiftData(modelContext: ModelContext) {
+        let descriptor = FetchDescriptor<TileSaveData>()
+        let savedTiles = (try? modelContext.fetch(descriptor)) ?? []
+        
+        for tile in tiles {
+            if let existing = savedTiles.first(where: { $0.gridX == tile.gridX && $0.gridY == tile.gridY }) {
+                existing.hasCrop = tile.hasCrop
+                existing.cropTextureName = tile.crop?.textureName
+                existing.plantedAt = tile.plantedAt != nil ? Date(timeIntervalSince1970: tile.plantedAt!) : nil
+                existing.harvested = tile.harvested
+            } else {
+                let newData = TileSaveData(
+                    gridX: tile.gridX,
+                    gridY: tile.gridY,
+                    hasCrop: tile.hasCrop,
+                    cropTextureName: tile.crop?.textureName,
+                    plantedAt: tile.plantedAt != nil ? Date(timeIntervalSince1970: tile.plantedAt!) : nil,
+                    harvested: tile.harvested
+                )
+                modelContext.insert(newData)
+            }
+        }
+        try? modelContext.save()
+    }
+
 }
