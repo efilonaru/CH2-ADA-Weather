@@ -63,9 +63,15 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Assets.xcassets,
+				Core/Extensions.swift,
+				Data/MockData.swift,
 				Managers/SharedDatabaseManager.swift,
+				Models/DailyWeather.swift,
+				Models/HourlyWeather.swift,
 				Models/SaveDataModels.swift,
 				Models/WeatherCondition.swift,
+				Resources/Minecraft.ttf,
+				Views/Components/HourlyForecastItem.swift,
 			);
 			target = 7FE8D37B2F9BC4CA00108416 /* FarmWeatherWidgetExtension */;
 		};

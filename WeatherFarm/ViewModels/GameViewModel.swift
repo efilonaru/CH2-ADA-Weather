@@ -97,7 +97,7 @@ final class GameViewModel: ObservableObject {
             self.inventory = initialInventory
         }
         
-        let timeAway = Date().timeIntervalSince(savedState.lastSavedDate)
+        _ = Date().timeIntervalSince(savedState.lastSavedDate)
         var totalIdleGold = 0
         
         let tileDescriptor = FetchDescriptor<TileSaveData>()
@@ -148,6 +148,7 @@ final class GameViewModel: ObservableObject {
         try? modelContext.save()
         let defaults = UserDefaults(suiteName: "group.com.naufal.WeatherFarm")
         defaults?.set(self.gold, forKey: "gold")
+        defaults?.set(self.averageGoldPerCrop, forKey: "averageGoldPerCrop")
         WidgetCenter.shared.reloadAllTimelines()
     }
     

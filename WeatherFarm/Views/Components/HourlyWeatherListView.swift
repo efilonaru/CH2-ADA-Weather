@@ -49,5 +49,5 @@ struct HourlyWeatherListView: View {
 
 #Preview {
     HourlyWeatherListView(hourlyData: MockData.generateHourly(baseTemp: 30, icon: "cloud.sun.fill"))
-        .font(Font.minecraft(size: 16))
+        .font(.minecraft(size:16))
 }
