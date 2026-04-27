@@ -68,4 +68,5 @@ enum TimeOfDay: String, Codable, CaseIterable {
     case day = "Day"
     case afternoon = "Afternoon"
     case night = "Night"
+    
 }

@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import Combine
 import SwiftData
+import WidgetKit
 
 struct TileSelection: Identifiable, Equatable {
     let id = UUID()
@@ -145,6 +146,9 @@ final class GameViewModel: ObservableObject {
             savedState.lastSavedDate = Date()
         }
         try? modelContext.save()
+        let defaults = UserDefaults(suiteName: "group.com.naufal.WeatherFarm")
+        defaults?.set(self.gold, forKey: "gold")
+        WidgetCenter.shared.reloadAllTimelines()
     }
     
     func savePlantedCrop(x: Int, y: Int, textureName: String) {
@@ -243,6 +247,7 @@ final class GameViewModel: ObservableObject {
     func awardGold(_ amount: Int) {
         DispatchQueue.main.async {
             self.gold += amount
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
 

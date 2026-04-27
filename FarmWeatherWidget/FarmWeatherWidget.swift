@@ -23,7 +23,8 @@ struct Provider: AppIntentTimelineProvider {
         func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<SimpleEntry> {
             let data = await fetchWidgetData()
             let entry = SimpleEntry(date: Date(), configuration: configuration, goldAmount: data.gold, weather: data.weather, time: data.time)
-            return Timeline(entries: [entry], policy: .never)
+            let nextUpdate = Calendar.current.date(byAdding: .minute, value: 1, to: .now)!
+            return Timeline(entries: [entry], policy: .after(nextUpdate))
         }
     
     @MainActor
@@ -36,8 +37,8 @@ struct Provider: AppIntentTimelineProvider {
             }
             
             let defaults = UserDefaults(suiteName: "group.com.naufal.WeatherFarm")
-            let savedW = defaults?.string(forKey: "savedWeather") ?? "extremeHeat"
-            let savedT = defaults?.string(forKey: "savedTime") ?? "afternoon"
+            let savedW = defaults?.string(forKey: "savedWeather") ?? "sunny"
+            let savedT = defaults?.string(forKey: "savedTime") ?? "day"
             
             let weather = WeatherCondition(rawValue: savedW) ?? .extremeHeat
             let time = TimeOfDay(rawValue: savedT) ?? .afternoon
@@ -84,6 +85,23 @@ struct FarmWeatherWidget: Widget {
         }
     }
 }
+
+
+extension ConfigurationAppIntent {
+    fileprivate static var smiley: ConfigurationAppIntent {
+        let intent = ConfigurationAppIntent()
+        intent.favoriteEmoji = "😀"
+        return intent
+    }
+    
+    fileprivate static var starEyes: ConfigurationAppIntent {
+        let intent = ConfigurationAppIntent()
+        intent.favoriteEmoji = "🤩"
+        return intent
+    }
+}
+
+
 //
 //struct Provider: AppIntentTimelineProvider {
 //    func placeholder(in context: Context) -> SimpleEntry {
@@ -142,20 +160,6 @@ struct FarmWeatherWidget: Widget {
 //        }
 //    }
 //}
-
-extension ConfigurationAppIntent {
-    fileprivate static var smiley: ConfigurationAppIntent {
-        let intent = ConfigurationAppIntent()
-        intent.favoriteEmoji = "😀"
-        return intent
-    }
-    
-    fileprivate static var starEyes: ConfigurationAppIntent {
-        let intent = ConfigurationAppIntent()
-        intent.favoriteEmoji = "🤩"
-        return intent
-    }
-}
 
 //#Preview(as: .systemSmall) {
 //    FarmWeatherWidget()
