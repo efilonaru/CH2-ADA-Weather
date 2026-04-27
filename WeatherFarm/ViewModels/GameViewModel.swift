@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import Combine
 import SwiftData
+import WidgetKit
 
 struct TileSelection: Identifiable, Equatable {
     let id = UUID()
@@ -96,7 +97,7 @@ final class GameViewModel: ObservableObject {
             self.inventory = initialInventory
         }
         
-        let timeAway = Date().timeIntervalSince(savedState.lastSavedDate)
+        _ = Date().timeIntervalSince(savedState.lastSavedDate)
         var totalIdleGold = 0
         
         let tileDescriptor = FetchDescriptor<TileSaveData>()
@@ -145,6 +146,10 @@ final class GameViewModel: ObservableObject {
             savedState.lastSavedDate = Date()
         }
         try? modelContext.save()
+        let defaults = UserDefaults(suiteName: "group.com.naufal.WeatherFarm")
+        defaults?.set(self.gold, forKey: "gold")
+        defaults?.set(self.averageGoldPerCrop, forKey: "averageGoldPerCrop")
+        WidgetCenter.shared.reloadAllTimelines()
     }
     
     func savePlantedCrop(x: Int, y: Int, textureName: String) {
@@ -237,12 +242,13 @@ final class GameViewModel: ObservableObject {
     func requestHarvest(x: Int, y: Int) {
         plantedCrops.removeValue(forKey: "\(x):\(y)")
         harvestRequest.send(HarvestRequest(gridX: x, gridY: y))
-        deselectTile()
-    }
+        saveGameState()
+        deselectTile()    }
 
     func awardGold(_ amount: Int) {
         DispatchQueue.main.async {
             self.gold += amount
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
 

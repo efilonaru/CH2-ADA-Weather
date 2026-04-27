@@ -63,9 +63,15 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Assets.xcassets,
+				Core/Extensions.swift,
+				Data/MockData.swift,
 				Managers/SharedDatabaseManager.swift,
+				Models/DailyWeather.swift,
+				Models/HourlyWeather.swift,
 				Models/SaveDataModels.swift,
 				Models/WeatherCondition.swift,
+				Resources/Minecraft.ttf,
+				Views/Components/HourlyForecastItem.swift,
 			);
 			target = 7FE8D37B2F9BC4CA00108416 /* FarmWeatherWidgetExtension */;
 		};
@@ -458,7 +464,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = WeatherFarm/WeatherFarm.entitlements;
+				CODE_SIGN_ENTITLEMENTS = WeatherFarm/WeatherFarmDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;

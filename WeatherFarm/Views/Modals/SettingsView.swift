@@ -38,7 +38,10 @@ struct SettingsView: View {
                 ) {
                     ForEach(WeatherCondition.allCases, id: \.self) { weather in
                         HStack {
-                            Image(systemName: weather.icon)
+                            Image(weather.icon)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 24, height: 24)
                             Text(weather.rawValue)
                         }
                         .tag(weather)

@@ -32,13 +32,3 @@ struct WeatherForecast: View {
 
     }
 }
-
-#Preview {
-    WeatherForecast(data: [
-        HourlyWeather(time: "Now", iconName: "moon.stars.fill", temp: 26),
-        HourlyWeather(time: "22", iconName: "moon.stars.fill", temp: 26),
-        HourlyWeather(time: "23", iconName: "moon.stars.fill", temp: 26),
-        HourlyWeather(time: "00", iconName: "moon.stars.fill", temp: 25),
-        HourlyWeather(time: "01", iconName: "moon.stars.fill", temp: 25),
-    ])
-}

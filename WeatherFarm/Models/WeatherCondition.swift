@@ -16,11 +16,11 @@ enum WeatherCondition: String, Codable, CaseIterable {
     
     var icon: String {
         switch self {
-        case .sunny: return "sun.max.fill"
-        case .rain: return "cloud.rain.fill"
-        case .cloudy: return "cloud.fill"
-        case .extremeHeat: return "thermometer.sun.fill"
-        case .snow: return "snowflake"
+        case .sunny: return "sun"
+        case .rain: return "umbrella"
+        case .cloudy: return "cloudy"
+        case .extremeHeat: return "hot"
+        case .snow: return "snowy"
         }
     }
     
@@ -68,4 +68,5 @@ enum TimeOfDay: String, Codable, CaseIterable {
     case day = "Day"
     case afternoon = "Afternoon"
     case night = "Night"
+    
 }
