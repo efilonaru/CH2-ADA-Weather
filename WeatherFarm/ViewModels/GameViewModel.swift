@@ -64,9 +64,18 @@ final class GameViewModel: ObservableObject {
     }
     
     var averageGoldPerCrop: Double {
-        guard !plantedCrops.isEmpty else { return 0.0 }
-        let total = Double(gold) + Double(currentWeatherBonus)
-        return total / Double(plantedCrops.count)
+        plantedCrops.reduce(0.0) { total, tile in
+            let crop = tile.value
+            
+            let multiplier = (crop.preferredWeather == worldManager?.currentWeather)
+            ? Constants.Game.preferredWeatherMultiplier
+            : 1.0
+            
+            let effectiveDuration = crop.baseGrowthDuration / multiplier
+            let goldPerSecond = Double(crop.value) / effectiveDuration
+            
+            return total + goldPerSecond
+        } * 60.0
     }
     
     func loadSavedGameState() {

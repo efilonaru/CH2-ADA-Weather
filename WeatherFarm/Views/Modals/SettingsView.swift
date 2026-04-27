@@ -105,14 +105,8 @@ struct SettingsView: View {
                 }
 
                 if !viewModel.plantedCrops.isEmpty {
-//                    let totalPotential = Double(
-//                        viewModel.potentialGoldSummary
-//                            + viewModel.currentWeatherBonus
-//                    )
-//                    let avg =
-//                        totalPotential / Double(viewModel.plantedCrops.count)
                     HStack {
-                        Text("Average Gold / Crop")
+                        Text("Average Gold / Min")
                         Spacer()
                         Text(String(format: "%.1f", viewModel.averageGoldPerCrop))
                             .foregroundColor(.secondary)
@@ -120,7 +114,6 @@ struct SettingsView: View {
                 }
             }
         }
-        //        .navigationTitle("Settings")
         .background(Color(UIColor.systemGroupedBackground))
     }
 }
