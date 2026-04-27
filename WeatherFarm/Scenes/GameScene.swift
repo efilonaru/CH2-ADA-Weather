@@ -451,7 +451,7 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
             
             let plusTexture = SKTexture.fromSymbol(
                 "plus.circle.fill",
-                pointSize: 28,
+                pointSize: 20,
                 color: .systemGreen
             )
             
