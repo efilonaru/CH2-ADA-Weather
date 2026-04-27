@@ -29,7 +29,7 @@ struct CurrentWeatherView: View {
             HStack(alignment: .center, spacing: 24) {
                 
                 Text("\(worldManager.currentWeather.exampleStats.currentTemp)°")
-                    .font(.system(size: 84, weight: .bold, design: .rounded))
+                    .font(.minecraft(size: 84))
                 
                 VStack(alignment: .leading, spacing: 8) {
                     Text(worldManager.currentWeather.conditionsExample)

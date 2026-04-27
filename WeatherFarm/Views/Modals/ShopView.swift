@@ -93,8 +93,10 @@ struct ShopItemCard: View {
                 VStack {
                     HStack {
                         Spacer()
-                        Image(systemName: crop.preferredWeather.icon)
-                            .foregroundColor(.blue.opacity(0.6))
+                        Image(crop.preferredWeather.icon)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 24, height: 24)
                     }
                     Spacer()
                 }

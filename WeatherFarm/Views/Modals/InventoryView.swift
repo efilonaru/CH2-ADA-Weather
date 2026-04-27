@@ -53,9 +53,10 @@ struct InventoryItemCard: View {
 
                 VStack {
                     HStack {
-                        Image(systemName: crop.preferredWeather.icon)
-                            .font(.system(size: 12))
-                            .foregroundColor(.blue.opacity(0.7))
+                        Image(crop.preferredWeather.icon)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 24, height: 24)
 
                         Spacer()
 

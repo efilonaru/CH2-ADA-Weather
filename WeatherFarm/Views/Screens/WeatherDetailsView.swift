@@ -18,7 +18,7 @@ struct WeatherDetailsView: View {
                 CurrentWeatherView(day: selectedDay)
                 
                 Text("Hourly Forecast")
-                    .font(.headline)
+                    .font(.minecraft(size: 24))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
                 
