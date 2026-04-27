@@ -231,7 +231,7 @@ final class GameViewModel: ObservableObject {
     }
 
     func buyCrop(_ crop: CropModel) {
-        requestConfirmation(message: "Buy \(crop.name) for $\(crop.buyPrice)?") {
+        requestConfirmation(message: "Buy \(crop.name) for \(crop.buyPrice) coins?") {
             if self.spendGold(crop.buyPrice) {
                 self.inventory[crop.name, default: 0] += 1
                 self.saveGameState()

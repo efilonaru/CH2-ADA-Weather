@@ -415,7 +415,7 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         guard tileMap["\(x):\(y)"] == nil else { return }
         let cost = costToAddTile()
         gameViewModel?.requestConfirmation(
-            message: "Buy new land for $\(cost)?"
+            message: "Buy new land for \(cost) coins?"
         ) { [weak self] in
             guard let self = self else { return }
             if self.gameViewModel?.spendGold(cost) == true {
