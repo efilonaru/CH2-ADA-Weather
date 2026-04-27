@@ -129,7 +129,7 @@ final class GameViewModel: ObservableObject {
         if totalIdleGold > 0 {
             self.gold += totalIdleGold
             savedState.totalGold = self.gold
-            self.confirmationMessage = "While you were away, your farm earned $\(totalIdleGold)!"
+            self.confirmationMessage = "While you were away, your farm earned \(totalIdleGold) coins!"
             self.showConfirmation = true
         }
         
