@@ -26,7 +26,7 @@ fileprivate struct SecondaryButtonStyle: ButtonStyle {
 // Helper button with the gradient and shadow styles from the original FarmView
 fileprivate struct GameActionButton: View {
     let systemName: String
-    let color: Color
+//    let color: Color
     let action: () -> Void
 
     var body: some View {
@@ -36,14 +36,10 @@ fileprivate struct GameActionButton: View {
                 .foregroundColor(.white)
                 .frame(width: 52, height: 52)
                 .background(
-                    LinearGradient(
-                        colors: [color, color.opacity(0.8)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
+                    .gray.opacity(0.4)
                     )
-                )
                 .clipShape(Circle())
-                .shadow(color: color.opacity(0.4), radius: 6, x: 0, y: 3)
+                .shadow(radius: 6, x: 0, y: 3)
                 .overlay(Circle().stroke(.white.opacity(0.3), lineWidth: 1.5))
         }
 //        .buttonStyle(ScaleButtonStyle())
@@ -61,7 +57,7 @@ struct FloatingActionButton: View {
             VStack(spacing: 16) {
                 if isMenuExpanded {
                     // Settings Button
-                    GameActionButton(systemName: "gearshape.fill", color: .gray) {
+                    GameActionButton(systemName: "gearshape.fill") {
                         viewModel.showSettings = true
                         isMenuExpanded = false
                     }
@@ -69,8 +65,7 @@ struct FloatingActionButton: View {
 
                     // Edit Mode Button
                     GameActionButton(
-                        systemName: "pencil",
-                        color: viewModel.isEditMode ? .purple : .blue
+                        systemName: "pencil"
                     ) {
                         viewModel.toggleEditMode()
                         withAnimation { isMenuExpanded = false }
@@ -78,14 +73,14 @@ struct FloatingActionButton: View {
                     .transition(.move(edge: .bottom).combined(with: .opacity))
 
                     // Inventory Button
-                    GameActionButton(systemName: "bag.fill", color: .green) {
+                    GameActionButton(systemName: "bag.fill") {
                         viewModel.showInventory = true
                         isMenuExpanded = false
                     }
                     .transition(.move(edge: .bottom).combined(with: .opacity))
 
                     // Shop Button
-                    GameActionButton(systemName: "cart.fill", color: .orange) {
+                    GameActionButton(systemName: "cart.fill") {
                         viewModel.showShop = true
                         isMenuExpanded = false
                     }
