@@ -16,15 +16,15 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
     private var diamondWidth: CGFloat = 0
     private var diamondHeight: CGFloat = 0
 
-    let renderScale: CGFloat = 2.0
-    let tileGap: CGFloat = 4.0
+    let renderScale = Constants.Render.tileScale
+    let tileGap = Constants.Render.tileGap
 
     private var sceneCamera: SKCameraNode?
     private var minCameraScale: CGFloat = 0.5
     private var maxCameraScale: CGFloat = 3.0
     private var cameraDefaultScale: CGFloat = 1.0
 
-    private let cameraPadding: CGFloat = 64.0
+    private let cameraPadding = Constants.Camera.padding
     private var gridBounds: CGRect = .zero
     private var gridOrigin: CGPoint = .zero
     private var tileMap: [String: TileNode] = [:]
@@ -219,7 +219,7 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         doubleTap.delegate = self
         skView.addGestureRecognizer(doubleTap)
 
-        drawGrid(rows: 3, cols: 3)
+        drawGrid(rows: Constants.Grid.rows, cols: Constants.Grid.cols)
         self.gridBounds = computeGridBounds()
 
         // Restore tiles after grid is ready
@@ -236,8 +236,8 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
                 paddedHeight / viewSize.height
             )
             cameraDefaultScale = max(1.0, scaleFit)
-            maxCameraScale = max(cameraDefaultScale, 3.0)
-            minCameraScale = max(0.25, cameraDefaultScale / 4.0)
+            maxCameraScale = max(cameraDefaultScale, Constants.Camera.maxScale)
+            minCameraScale = max(Constants.Camera.minScale, cameraDefaultScale / 4.0)
             cam.setScale(cameraDefaultScale)
             cam.position = CGPoint(x: gridBounds.midX, y: gridBounds.midY)
         }
@@ -406,7 +406,10 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         )
     }
 
-    private func costToAddTile() -> Int { 20 + 5 * max(0, tiles.count - 9) }
+    private func costToAddTile() -> Int {
+        Constants.Game.baseTileCost +
+        Constants.Game.tileCostIncrease * max(0, tiles.count - 9)
+    }
 
     private func addTileAt(x: Int, y: Int) {
         guard tileMap["\(x):\(y)"] == nil else { return }
@@ -420,7 +423,7 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
                 tile.baseTexture = self.baseTileTexture
                 tile.highlightTexture = self.highlightTileTexture
                 tile.size =
-                    self.tiles.first?.size ?? CGSize(width: 64, height: 64)
+                self.tiles.first?.size ?? Constants.Tile.fallbackSize
                 tile.anchorPoint = CGPoint(x: 0.5, y: 0.0)
                 tile.gridX = x
                 tile.gridY = y
@@ -469,7 +472,7 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
                         ghost.targetX = nx
                         ghost.targetY = ny
                         ghost.position = positionForGrid(x: nx, y: ny)
-                        ghost.zPosition = -ghost.position.y - 1
+                        ghost.zPosition = Constants.ZIndex.ghostOffset
                         ghost.name = "ghost_tile"
                         ghost.alpha = 1.0
                         
@@ -526,15 +529,18 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         for tile in tiles {
             guard tile.hasCrop, let crop = tile.crop else { continue }
             let multiplier: Double =
-                (crop.preferredWeather == currentWeather) ? 1.5 : 1.0
+                (crop.preferredWeather == currentWeather)
+                ? Constants.Game.preferredWeatherMultiplier
+                : 1.0
             let progress = tile.growthProgress(
                 currentTime: Date().timeIntervalSince1970,
                 weatherMultiplier: multiplier
             )
             if let base = crop.textureName, !base.isEmpty {
                 let stage =
-                    progress < 0.33
-                    ? "_seed" : (progress < 0.66 ? "_seedling" : "_harvest")
+                    progress < Constants.Growth.stage1
+                    ? "_seed"
+                    : (progress < Constants.Growth.stage2 ? "_seedling" : "_harvest")
                 let tex = SKTexture(imageNamed: "\(base)\(stage)")
                 tex.filteringMode = .nearest
                 tile.texture = tex
@@ -561,7 +567,7 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         guard tile.hasCrop, let crop = tile.crop else { return }
 
         let isPreferred = (crop.preferredWeather == currentWeather)
-        let bonus = isPreferred ? Int(Double(crop.value) * 0.2) : 0
+        let bonus = isPreferred ? Int(Double(crop.value) * Constants.Game.preferredWeatherMultiplier) : 0
         let totalAward = crop.value + bonus
 
         let newPlantedDate = autoReplant ? Date() : nil
@@ -619,7 +625,9 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
 
         if let crop = t.crop {
             let isPreferred = (crop.preferredWeather == currentWeather)
-            let bonus = isPreferred ? Int(Double(crop.value) * 0.2) : 0
+            let bonus = isPreferred
+                ? Int(Double(crop.value) * Constants.Game.autoHarvestBonus)
+                : 0
             let totalAward = crop.value + bonus
             gameViewModel?.notifyAutoHarvest(
                 x: x,
@@ -649,7 +657,7 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
     ) {
         let node = SKSpriteNode(imageNamed: imageName)
         node.name = "weather_particle"
-        node.zPosition = 1000
+        node.zPosition = Constants.ZIndex.weather
         
         // Camera-based spawn area
         let camX = camera?.position.x ?? size.width / 2
@@ -658,11 +666,11 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         let screenWidth = size.width * (camera?.xScale ?? 1.0)
         let screenHeight = size.height * (camera?.yScale ?? 1.0)
         
-        let spawnOffset: CGFloat = 300
+        let spawnOffset: CGFloat = Constants.Layout.weatherSpawnOffset
         let randomX = CGFloat.random(
             in: (camX - screenWidth/2)...(camX + screenWidth/2 + spawnOffset)
         )
-        let startY = camY + screenHeight/2 + 50
+        let startY = camY + screenHeight/2 + Constants.Layout.weatherStartYOffset
         
         node.position = CGPoint(x: randomX, y: startY)
         
@@ -685,12 +693,12 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         
         spawnWeatherParticle(
             imageName: "raindrop",
-            zRotation: 0.4,
-            alphaRange: 0.5...1.0,
-            scaleRange: 0.8...1.2,
-            moveX: -500,
-            moveY: -screenHeight - 150,
-            duration: 0.8
+            zRotation: Constants.Weather.Rain.rotation,
+            alphaRange: Constants.Weather.Rain.alpha,
+            scaleRange: Constants.Weather.Rain.scale,
+            moveX: Constants.Weather.Rain.moveX,
+            moveY: -screenHeight - Constants.Weather.extraFallDistance,
+            duration: Constants.Weather.Rain.duration
         )
     }
     
@@ -699,17 +707,17 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
          
         spawnWeatherParticle(
             imageName: "snow",
-            zRotation: 0,
-            alphaRange: 0.7...1.0,
-            scaleRange: 0.5...1.0,
-            moveX: CGFloat.random(in: -50...50),
-            moveY: -screenHeight - 150,
-            duration: 3.0
+            zRotation: Constants.Weather.Snow.rotation,
+            alphaRange: Constants.Weather.Snow.alpha,
+            scaleRange: Constants.Weather.Snow.scale,
+            moveX: CGFloat.random(in: Constants.Weather.Snow.moveX),
+            moveY: -screenHeight - Constants.Weather.extraFallDistance,
+            duration: Constants.Weather.Snow.duration
         )
     }
     
     private func startWeatherSystem(
-        interval: TimeInterval = 0.02,
+        interval: TimeInterval = Constants.Weather.spawnInterval,
         spawn: @escaping () -> Void
     ) {
         removeAction(forKey: "weather_system")
@@ -727,16 +735,24 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         label.fontSize = 16
         label.fontColor = .yellow
         
-        label.position = CGPoint(x: position.x, y: position.y + 40)
+        label.position = CGPoint(x: position.x, y: position.y + Constants.Layout.floatingGoldOffsetY)
         
-        label.zPosition = 2000
+        label.zPosition = Constants.ZIndex.floatingText
         label.alpha = 0.0
         
         addChild(label)
         
-        let fadeIn = SKAction.fadeIn(withDuration: 0.1)
-        let moveUp = SKAction.moveBy(x: 0, y: 30, duration: 0.6)
-        let fadeOut = SKAction.fadeOut(withDuration: 0.6)
+        let fadeIn = SKAction.fadeIn(withDuration: Constants.Animation.floatingGoldFadeIn)
+
+        let moveUp = SKAction.moveBy(
+            x: 0,
+            y: Constants.Animation.floatingGoldRise,
+            duration: Constants.Animation.floatingGoldDuration
+        )
+
+        let fadeOut = SKAction.fadeOut(
+            withDuration: Constants.Animation.floatingGoldDuration
+        )
         
         let group = SKAction.group([moveUp, fadeOut])
         let sequence = SKAction.sequence([
