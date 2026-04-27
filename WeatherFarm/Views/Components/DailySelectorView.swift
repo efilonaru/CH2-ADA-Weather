@@ -31,10 +31,10 @@ struct DailySelectorView: View {
                                     .font(.minecraft(size: 16))
                                     .foregroundColor(.secondary)
                                 
-                                Image(systemName: day.iconName)
-                                    .font(.title2)
-                                    .symbolRenderingMode(.multicolor)
-                                    .frame(height: 30)
+                                Image(day.iconName)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 32, height: 32)
                                 
                                 Text("\(day.highTemp)° / \(day.lowTemp)°")
                                     .font(.minecraft(size: 16))

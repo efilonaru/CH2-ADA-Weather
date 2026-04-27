@@ -10,13 +10,16 @@ struct HourItemView: View {
     let item: HourlyWeather
 
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 10) {
             Text(item.time)
                 .font(.minecraft(size: 24))
 //                .font(.caption)
 
-            Image(systemName: item.iconName)
-                .font(Font.system(size: 24, weight: .bold, design: .default))
+            Image(item.iconName)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 32, height: 32)
+
 
             Text("\(item.temp)°")
                 .font(.minecraft(size: 24))
@@ -27,5 +30,5 @@ struct HourItemView: View {
 }
 
 #Preview {
-    HourItemView(item: .init(time: "12:00", iconName: "cloud.rain", temp: 20))
+    HourItemView(item: .init(time: "12 PM", iconName: "cloudy", temp: 20))
 }

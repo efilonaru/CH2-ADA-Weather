@@ -18,8 +18,10 @@ struct HourItemViewWidget: View {
                 .font(.minecraft(size: fontSize))
 //                .font(.caption)
 
-            Image(systemName: item.iconName)
-                .font(Font.system(size: iconSize, weight: .bold, design: .default))
+            Image(item.iconName)
+                .resizable()
+                .scaledToFit()
+                .frame(width: iconSize*1.5, height: iconSize*1.5)
 
             Text("\(item.temp)°")
                 .font(.minecraft(size: fontSize))
@@ -30,7 +32,19 @@ struct HourItemViewWidget: View {
 }
 
 struct HourlyWeatherListViewWidget: View {
-    let data: [HourlyWeather] = MockData.generateHourly(baseTemp: 30, icon: "cloud.sun.fill")
+    var data: [HourlyWeather] {
+        guard let base = MockData.weekForecast.first(where: { $0.isToday })?.hourlyData else {
+            return []
+        }
+
+        let now = HourlyWeather(
+            time: "Now",
+            iconName: "sun",
+            temp: base.first?.temp ?? 30
+        )
+
+        return [now] + base.dropFirst()
+    }
     var parentHStackSpacing: CGFloat = 0
     var hStackSpacing: CGFloat = 16
     var fontSize: CGFloat = 12
@@ -48,7 +62,6 @@ struct HourlyWeatherListViewWidget: View {
                         HourItemViewWidget(item: item, fontSize: fontSize, iconSize: iconSize)
                     }
                 }
-            Spacer()
         }
         .frame(maxWidth: .infinity, alignment: .center)
         .background(.ultraThinMaterial

@@ -138,4 +138,6 @@ struct ShopItemCard: View {
 
 #Preview {
     ShopView()
+        .environmentObject(GameViewModel())
+        .environmentObject(WorldEnvironmentManager())
 }

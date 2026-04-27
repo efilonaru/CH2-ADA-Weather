@@ -20,10 +20,12 @@ struct HourlyWeatherListView: View {
 //                            .font(.callout)
                             .frame(width: 60, alignment: .leading)
                         
-                        Image(systemName: hour.iconName)
-                            .font(.title2)
-                            .frame(width: 40)
-                            .symbolRenderingMode(.multicolor)
+                        Spacer()
+                        
+                        Image(hour.iconName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 28, height: 28)
                         
                         Spacer()
                         
@@ -48,6 +50,6 @@ struct HourlyWeatherListView: View {
 }
 
 #Preview {
-    HourlyWeatherListView(hourlyData: MockData.generateHourly(baseTemp: 30, icon: "cloud.sun.fill"))
+    HourlyWeatherListView(hourlyData: MockData.generateHourly(baseTemp: 30, icon: "cloudy"))
         .font(.minecraft(size:16))
 }

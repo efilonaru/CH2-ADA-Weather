@@ -242,8 +242,8 @@ final class GameViewModel: ObservableObject {
     func requestHarvest(x: Int, y: Int) {
         plantedCrops.removeValue(forKey: "\(x):\(y)")
         harvestRequest.send(HarvestRequest(gridX: x, gridY: y))
-        deselectTile()
-    }
+        saveGameState()
+        deselectTile()    }
 
     func awardGold(_ amount: Int) {
         DispatchQueue.main.async {

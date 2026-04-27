@@ -22,9 +22,16 @@ struct Provider: AppIntentTimelineProvider {
         
         func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<SimpleEntry> {
             let data = await fetchWidgetData()
-            let entry = SimpleEntry(date: Date(), configuration: configuration, goldAmount: data.gold, weather: data.weather, time: data.time, averageGoldPerCrop:data.averageGoldPerCrop, dayString: data.dayString, dateString: data.dateString)
-            let nextUpdate = Calendar.current.date(byAdding: .minute, value: 1, to: .now)!
-            return Timeline(entries: [entry], policy: .after(nextUpdate))
+            var entries: [SimpleEntry] = []
+            for minuteOffset in 0..<60 {
+                let entryDate = Calendar.current.date(byAdding: .minute, value: minuteOffset, to: .now)!
+                let projectedGold = data.gold + (minuteOffset * Int(data.averageGoldPerCrop))
+                
+                let entry = SimpleEntry(date: entryDate, configuration: configuration, goldAmount: projectedGold, weather: data.weather, time: data.time, averageGoldPerCrop:data.averageGoldPerCrop, dayString: data.dayString, dateString: data.dateString)
+                entries.append(entry)
+            }
+            let reloadDate = Calendar.current.date(byAdding: .hour, value: 1, to: .now)!
+            return Timeline(entries: entries, policy: .after(reloadDate))
         }
     
     @MainActor
@@ -41,8 +48,8 @@ struct Provider: AppIntentTimelineProvider {
             let savedT = defaults?.string(forKey: "savedTime") ?? "day"
             let averageGoldPerCrop = defaults?.double(forKey: "averageGoldPerCrop") ?? 10.0
             
-            let weather = WeatherCondition(rawValue: savedW) ?? .extremeHeat
-            let time = TimeOfDay(rawValue: savedT) ?? .afternoon
+            let weather = WeatherCondition(rawValue: savedW) ?? .sunny
+            let time = TimeOfDay(rawValue: savedT) ?? .day
             
             let now = Date()
             let dayFormatter = DateFormatter()
@@ -100,7 +107,7 @@ struct FarmWeatherWidgetEntryView: View {
             Spacer()
             
             HourlyWeatherListViewWidget(
-                parentHStackSpacing: 0,
+                parentHStackSpacing: 4,
                 hStackSpacing: 10,
                 fontSize: 10,
                 iconSize: 16,
