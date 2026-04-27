@@ -12,8 +12,7 @@ struct HourItemView: View {
     var body: some View {
         VStack(spacing: 10) {
             Text(item.time)
-                .font(.minecraft(size: 24))
-//                .font(.caption)
+                .font(.minecraft(size: 16))
 
             Image(item.iconName)
                 .resizable()
@@ -22,10 +21,9 @@ struct HourItemView: View {
 
 
             Text("\(item.temp)°")
-                .font(.minecraft(size: 24))
-//                .font(.caption)
+                .font(.minecraft(size: 16))
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 4)
     }
 }
 

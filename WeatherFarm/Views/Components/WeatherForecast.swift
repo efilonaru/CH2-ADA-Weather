@@ -14,14 +14,14 @@ struct WeatherForecast: View {
         HStack(spacing: 0) {
             if let first = data.first {
                 HourItemView(item: first)
-                    .frame(width: 70)
+                    .frame(width: 54)
             }
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     ForEach(data.dropFirst()) { item in
                         HourItemView(item: item)
-                            .frame(width: 70)
+                            .frame(width: 54)
                     }
                 }
             }

@@ -68,10 +68,7 @@ struct FarmView: View {
         .toolbar(.hidden, for: .navigationBar)
         .environmentObject(viewModel)
         .alert(viewModel.confirmationMessage, isPresented: $viewModel.showConfirmation) {
-            Button("Cancel", role: .cancel) { }
-            Button("OK") {
-                viewModel.onConfirm?()
-            }
+            Button("OK") {}
         }
         .sheet(isPresented: $viewModel.showShop) {
             ShopView()
