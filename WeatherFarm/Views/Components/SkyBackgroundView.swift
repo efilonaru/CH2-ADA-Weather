@@ -9,42 +9,56 @@ import SwiftUI
 struct SkyBackgroundView: View {
     var weather: WeatherCondition
     var time: TimeOfDay
-
-    //    var imageSuffix: String {
-    //        let weatherStr = String(describing: weather) // e.g., "sunny", "stormy"
-    //        let timeStr = String(describing: time)       // e.g., "day", "afternoon", "night"
-    //        return "\(timeStr)_\(weatherStr)"
-    //    }
-
     var imageSuffix: String {
         switch (weather, time) {
-
-        case (.sunny, .dawn), (.extremeHeat, .dawn):
+            
+            // SUNNY
+        case (.sunny, .dawn):
             return "dawn_sunny"
-        case (.sunny, .day), (.extremeHeat, .day):
+        case (.sunny, .day):
             return "day_sunny"
-        case (.sunny, .afternoon), (.extremeHeat, .afternoon):
+        case (.sunny, .afternoon):
             return "afternoon_sunny"
-        case (.sunny, .night), (.extremeHeat, .night):
+        case (.sunny, .night):
             return "night_sunny"
-
-        case (.cloudy, .dawn), (.snow, .dawn):
+            
+        case (.extremeHeat, .dawn):
+            return "dawn_sunny"
+        case (.extremeHeat, .day):
+            return "afternoon_extremeHeat"
+        case (.extremeHeat, .afternoon):
+            return "afternoon_extremeHeat"
+        case (.extremeHeat, .night):
+            return "night_sunny"
+        case (.cloudy, .dawn):
             return "dawn_cloudy"
-        case (.cloudy, .day), (.snow, .day):
+        case (.cloudy, .day):
             return "dawn_cloudy"
-        case (.cloudy, .afternoon), (.snow, .afternoon):
+        case (.cloudy, .afternoon):
             return "dawn_cloudy"
-        case (.cloudy, .night), (.snow, .night):
+        case (.cloudy, .night):
             return "night_cloudy"
-
-        case (.rain, .dawn):
+            
+            
+        case (.snow, .dawn):
             return "dawn_cloudy"
+        case (.snow, .day):
+            return "dawn_cloudy"
+        case (.snow, .afternoon):
+            return "dawn_cloudy"
+        case (.snow, .night):
+            return "night_cloudy"
+            
+            // RAIN
+        case (.rain, .dawn):
+            return "dawn_cloudy"             // no dawn_rainy, cloudy is closest
         case (.rain, .day):
-            return "afternoon_rainy"
+            return "afternoon_rainy"         // no day_rainy, afternoon_rainy is closest
         case (.rain, .afternoon):
             return "afternoon_rainy"
         case (.rain, .night):
-            return "night_cloudy"
+            return "night_cloudy"            // no night_rainy, dark cloudy is closest
+            
         }
     }
 
